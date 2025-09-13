@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Coffee, Filter, Package, ShoppingCart } from "lucide-react";
+import { useCart } from "@/context/cartcontext"; // import do contexto
 
 type Product = {
   id: number;
@@ -29,6 +30,7 @@ const Loja = () => {
   const [selectedRoast, setSelectedRoast] = useState<string>("all");
   const [selectedWeight, setSelectedWeight] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
+  const { addItem } = useCart(); // pegar a função para adicionar itens
 
   const products: Product[] = [
     {
@@ -105,7 +107,6 @@ const Loja = () => {
     const weightMatch =
       selectedWeight === "all" || product.weight === selectedWeight;
     const typeMatch = selectedType === "all" || product.type === selectedType;
-
     return roastMatch && weightMatch && typeMatch;
   });
 
@@ -267,6 +268,16 @@ const Loja = () => {
                             : "bg-muted text-muted-foreground cursor-not-allowed"
                         }`}
                         disabled={!product.inStock}
+                        onClick={() =>
+                          product.inStock &&
+                          addItem({
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            quantity: 1,
+                            image: undefined,
+                          })
+                        }
                       >
                         {product.inStock ? (
                           <>

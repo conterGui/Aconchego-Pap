@@ -11,6 +11,7 @@ import Reservas from "./pages/Reservas";
 import Sobre from "./pages/Sobre";
 import Contato from "./pages/Contato";
 import NotFound from "./pages/NotFound";
+import { CartProvider } from "@/context/cartcontext";
 
 const queryClient = new QueryClient();
 
@@ -19,19 +20,22 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/loja" element={<Loja />} />
-          <Route path="/eventos" element={<Eventos />} />
-          <Route path="/reservas" element={<Reservas />} />
-          <Route path="/sobre" element={<Sobre />} />
-          <Route path="/contato" element={<Contato />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      {/* CartProvider envolve todo o app */}
+      <CartProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/loja" element={<Loja />} />
+            <Route path="/eventos" element={<Eventos />} />
+            <Route path="/reservas" element={<Reservas />} />
+            <Route path="/sobre" element={<Sobre />} />
+            <Route path="/contato" element={<Contato />} />
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
