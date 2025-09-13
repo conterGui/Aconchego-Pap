@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 export type CartItem = {
   id: number;
@@ -19,20 +13,24 @@ type CartContextType = {
   addItem: (item: CartItem) => void;
   removeItem: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
+  clearCart: () => void;
   totalItems: number;
   totalPrice: number;
 };
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+// Inicializa com valor dummy
+const CartContext = createContext<CartContextType>({} as CartContextType);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
+interface CartProviderProps {
+  children: ReactNode; // aqui deve ser ReactNode
+}
+
+export const CartProvider = ({ children }: CartProviderProps) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  // Total de itens
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
-  // Total do preço
   const totalPrice = items.reduce(
-    (acc, item) => acc + item.quantity * item.price,
+    (acc, item) => acc + item.price * item.quantity,
     0
   );
 
@@ -48,24 +46,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeItem = (id: number) => {
+  const removeItem = (id: number) =>
     setItems((prev) => prev.filter((i) => i.id !== id));
-  };
-
   const updateQuantity = (id: number, quantity: number) => {
     if (quantity < 1) return;
     setItems((prev) => prev.map((i) => (i.id === id ? { ...i, quantity } : i)));
   };
-
-  // Persistir no localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("cart");
-    if (stored) setItems(JSON.parse(stored));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items));
-  }, [items]);
+  const clearCart = () => setItems([]);
 
   return (
     <CartContext.Provider
@@ -74,6 +61,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         addItem,
         removeItem,
         updateQuantity,
+        clearCart,
         totalItems,
         totalPrice,
       }}

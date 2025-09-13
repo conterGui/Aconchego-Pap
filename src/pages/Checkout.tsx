@@ -1,61 +1,93 @@
 import { useState } from "react";
-import { useCart } from "@/context/cartcontext";
+import { useCart, CartItem } from "@/context/cartcontext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 
 const FinalizarCompra = () => {
-  const { items, totalPrice } = useCart();
-  const [shippingInfo, setShippingInfo] = useState({
+  const { items, totalPrice, clearCart } = useCart(); // clearCart para limpar após pedido
+
+  const [customerInfo, setCustomerInfo] = useState({
     nome: "",
+    email: "",
     morada: "",
     cidade: "",
   });
+
   const [paymentMethod, setPaymentMethod] = useState<"cartao" | "multibanco">(
     "cartao"
   );
-
   const [cardInfo, setCardInfo] = useState({
     numero: "",
     validade: "",
     cvc: "",
   });
 
-  const handleChangeShipping = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setShippingInfo({ ...shippingInfo, [e.target.name]: e.target.value });
+  const handleChangeCustomer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value });
   };
 
   const handleChangeCard = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCardInfo({ ...cardInfo, [e.target.name]: e.target.value });
   };
 
-  const handleConfirmOrder = () => {
-    // Carrinho vazio
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleConfirmOrder = async () => {
     if (items.length === 0) {
       toast.error("Adicione produtos antes de finalizar a compra.");
       return;
     }
 
-    // Morada incompleta
-    if (!shippingInfo.nome || !shippingInfo.morada || !shippingInfo.cidade) {
-      toast.error("Preencha todos os campos de morada para continuar.");
+    if (
+      !customerInfo.nome ||
+      !customerInfo.email ||
+      !customerInfo.morada ||
+      !customerInfo.cidade
+    ) {
+      toast.error("Por favor, preencha todos os campos de envio e contato.");
       return;
     }
 
-    // Dados do cartão incompletos
+    if (!validateEmail(customerInfo.email)) {
+      toast.error("Insira um email válido.");
+      return;
+    }
+
     if (paymentMethod === "cartao") {
       if (!cardInfo.numero || !cardInfo.validade || !cardInfo.cvc) {
-        toast.error("Preencha todos os campos do cartão.");
+        toast.error("Preencha todos os dados do cartão.");
         return;
       }
     }
 
-    // Pedido confirmado
-    toast.success("Pedido confirmado! Obrigado pela sua compra.");
+    try {
+      const response = await fetch("http://localhost:5000/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome: customerInfo.nome,
+          email: customerInfo.email,
+          items,
+          totalPrice,
+          shippingInfo: customerInfo,
+        }),
+      });
 
-    <Link to="/home" />;
+      if (!response.ok) throw new Error("Erro ao enviar email");
+
+      toast.success("Pedido confirmado! Email enviado com sucesso.");
+
+      // Limpa carrinho e formulário
+      clearCart();
+      setCustomerInfo({ nome: "", email: "", morada: "", cidade: "" });
+      setCardInfo({ numero: "", validade: "", cvc: "" });
+    } catch (err) {
+      toast.error("Erro ao enviar email. Tente novamente.");
+    }
   };
 
   return (
@@ -70,38 +102,45 @@ const FinalizarCompra = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Formulário de envio e pagamento */}
           <div className="space-y-6">
-            <section className="bg-card p-6 rounded-xl shadow-sm">
+            <section className="bg-card p-6 rounded-xl shadow-sm space-y-4">
               <h2 className="font-semibold text-xl text-foreground mb-4">
-                Morada de Entrega
+                Informações do Cliente
               </h2>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  name="nome"
-                  placeholder="Nome completo"
-                  className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
-                  value={shippingInfo.nome}
-                  onChange={handleChangeShipping}
-                />
-                <input
-                  type="text"
-                  name="morada"
-                  placeholder="Morada"
-                  className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
-                  value={shippingInfo.morada}
-                  onChange={handleChangeShipping}
-                />
-                <input
-                  type="text"
-                  name="cidade"
-                  placeholder="Cidade"
-                  className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
-                  value={shippingInfo.cidade}
-                  onChange={handleChangeShipping}
-                />
-              </div>
+              <input
+                type="text"
+                name="nome"
+                placeholder="Nome completo"
+                className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
+                value={customerInfo.nome}
+                onChange={handleChangeCustomer}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
+                value={customerInfo.email}
+                onChange={handleChangeCustomer}
+              />
+              <input
+                type="text"
+                name="morada"
+                placeholder="Morada"
+                className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
+                value={customerInfo.morada}
+                onChange={handleChangeCustomer}
+              />
+              <input
+                type="text"
+                name="cidade"
+                placeholder="Cidade"
+                className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
+                value={customerInfo.cidade}
+                onChange={handleChangeCustomer}
+              />
             </section>
 
+            {/* Método de pagamento */}
             <section className="bg-card p-6 rounded-xl shadow-sm">
               <h2 className="font-semibold text-xl text-foreground mb-4">
                 Método de Pagamento
@@ -169,8 +208,6 @@ const FinalizarCompra = () => {
                       className="w-full h-full object-contain"
                     />
                   </div>
-
-                  {/* Instruções */}
                   <p className="text-center text-muted-foreground text-sm">
                     Utilize o QR code acima no seu homebanking ou app de
                     Multibanco para efetuar o pagamento.
@@ -190,7 +227,7 @@ const FinalizarCompra = () => {
                 <p className="text-muted-foreground">Carrinho vazio</p>
               ) : (
                 <div className="space-y-4">
-                  {items.map((item) => (
+                  {items.map((item: CartItem) => (
                     <div
                       key={item.id}
                       className="flex justify-between text-foreground"
@@ -201,6 +238,7 @@ const FinalizarCompra = () => {
                       <span>€ {(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
+
                   <div className="flex justify-between font-bold text-accent border-t border-border pt-4">
                     <span>Total</span>
                     <span>€ {totalPrice.toFixed(2)}</span>

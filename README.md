@@ -9,7 +9,14 @@
 
 ## Como Iniciar
 
-1. Rode o Projeto:
+2. Rode o Backend:
+
+```bash
+cd backend
+node server.js
+```
+
+1. Rode o Frontend:
 
 ```bash
 cd aconchego
