@@ -276,12 +276,12 @@ const Menu = () => {
                       className="group hover:shadow-elegant transition-all duration-300"
                     >
                       <CardHeader>
-                        <div className="w-full h-32 bg-muted rounded-50 mb-4 flex items-center justify-center overflow-hidden">
+                        <div className="w-full h-32 bg-card rounded-md mb-4 flex items-center justify-center overflow-hidden">
                           {item.image ? (
                             <img
                               src={item.image}
                               alt={item.name}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover block"
                             />
                           ) : (
                             getCategoryIcon(item.category)

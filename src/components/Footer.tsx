@@ -17,25 +17,25 @@ const Footer = () => {
           {/* Contact Info */}
           <div className="space-y-4">
             <h3 className="font-playfair font-bold text-lg text-foreground">
-              Contato
+              Contacto
             </h3>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-accent" />
                 <span className="text-sm text-muted-foreground">
-                  Rua do Jazz, 123 - Centro, São Paulo - SP
+                  Rua do Jazz, 123 - Rossio - Lisboa
                 </span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-accent" />
                 <span className="text-sm text-muted-foreground">
-                  (11) 98765-4321
+                  (351) 21 123 4567
                 </span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-accent" />
                 <span className="text-sm text-muted-foreground">
-                  contato@cafejazz.com.br
+                  contacto@aconchego.com.br
                 </span>
               </div>
             </div>

@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -17,18 +23,25 @@ const Reservas = () => {
     phone: "",
     date: "",
     time: "",
-    guests: ""
+    guests: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate form
-    if (!formData.name || !formData.email || !formData.phone || !formData.date || !formData.time || !formData.guests) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.date ||
+      !formData.time ||
+      !formData.guests
+    ) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -36,8 +49,9 @@ const Reservas = () => {
     // Show success message
     toast({
       title: "Reserva solicitada!",
-      description: "Entraremos em contato em breve para confirmar sua reserva.",
-      className: "bg-gradient-gold text-primary"
+      description:
+        "Entraremos em contacto em breve para confirmar sua reserva.",
+      className: "bg-gradient-gold text-primary",
     });
 
     // Reset form
@@ -47,29 +61,53 @@ const Reservas = () => {
       phone: "",
       date: "",
       time: "",
-      guests: ""
+      guests: "",
     });
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const timeSlots = [
-    "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
-    "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
-    "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
-    "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
-    "20:00", "20:30", "21:00", "21:30", "22:00"
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00",
+    "20:30",
+    "21:00",
+    "21:30",
+    "22:00",
   ];
 
   return (
     <div className="min-h-screen">
       <Header />
-      
+
       <div className="pt-20">
         {/* Page Header */}
         <section className="py-12 bg-gradient-subtle">
@@ -99,7 +137,10 @@ const Reservas = () => {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Nome */}
                     <div className="space-y-2">
-                      <Label htmlFor="name" className="flex items-center space-x-2">
+                      <Label
+                        htmlFor="name"
+                        className="flex items-center space-x-2"
+                      >
                         <User className="h-4 w-4 text-accent" />
                         <span>Nome completo</span>
                       </Label>
@@ -115,7 +156,10 @@ const Reservas = () => {
 
                     {/* Email */}
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="flex items-center space-x-2">
+                      <Label
+                        htmlFor="email"
+                        className="flex items-center space-x-2"
+                      >
                         <Mail className="h-4 w-4 text-accent" />
                         <span>E-mail</span>
                       </Label>
@@ -131,14 +175,17 @@ const Reservas = () => {
 
                     {/* Telefone */}
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="flex items-center space-x-2">
+                      <Label
+                        htmlFor="phone"
+                        className="flex items-center space-x-2"
+                      >
                         <Phone className="h-4 w-4 text-accent" />
-                        <span>Telefone</span>
+                        <span>Telefomovel</span>
                       </Label>
                       <Input
                         id="phone"
                         type="tel"
-                        placeholder="(11) 99999-9999"
+                        placeholder="(351) 99999-9999"
                         value={formData.phone}
                         onChange={(e) => handleChange("phone", e.target.value)}
                         className="w-full"
@@ -148,7 +195,10 @@ const Reservas = () => {
                     {/* Data e Hora */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="date" className="flex items-center space-x-2">
+                        <Label
+                          htmlFor="date"
+                          className="flex items-center space-x-2"
+                        >
                           <Calendar className="h-4 w-4 text-accent" />
                           <span>Data</span>
                         </Label>
@@ -167,7 +217,10 @@ const Reservas = () => {
                           <Clock className="h-4 w-4 text-accent" />
                           <span>Horário</span>
                         </Label>
-                        <Select value={formData.time} onValueChange={(value) => handleChange("time", value)}>
+                        <Select
+                          value={formData.time}
+                          onValueChange={(value) => handleChange("time", value)}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione o horário" />
                           </SelectTrigger>
@@ -188,7 +241,10 @@ const Reservas = () => {
                         <Users className="h-4 w-4 text-accent" />
                         <span>Número de pessoas</span>
                       </Label>
-                      <Select value={formData.guests} onValueChange={(value) => handleChange("guests", value)}>
+                      <Select
+                        value={formData.guests}
+                        onValueChange={(value) => handleChange("guests", value)}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Quantas pessoas?" />
                         </SelectTrigger>
@@ -198,14 +254,16 @@ const Reservas = () => {
                               {num} {num === 1 ? "pessoa" : "pessoas"}
                             </SelectItem>
                           ))}
-                          <SelectItem value="more">Mais de 8 pessoas</SelectItem>
+                          <SelectItem value="more">
+                            Mais de 8 pessoas
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     {/* Submit Button */}
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       className="w-full bg-gradient-gold text-primary shadow-gold hover:shadow-elegant transition-all duration-300"
                       size="lg"
                     >
@@ -219,7 +277,9 @@ const Reservas = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="font-playfair text-lg">Horário de Funcionamento</CardTitle>
+                    <CardTitle className="font-playfair text-lg">
+                      Horário de Funcionamento
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <div className="flex justify-between">
@@ -239,7 +299,9 @@ const Reservas = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="font-playfair text-lg">Informações Importantes</CardTitle>
+                    <CardTitle className="font-playfair text-lg">
+                      Informações Importantes
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2 text-sm text-muted-foreground">
                     <p>• Reservas confirmadas por telefone ou e-mail</p>

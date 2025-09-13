@@ -63,7 +63,7 @@ const Sobre = () => {
     {
       icon: <Award className="h-6 w-6 text-accent" />,
       title: "Melhor Cafeteria 2023",
-      description: "Prêmio São Paulo Gastronômico",
+      description: "Prêmio Europeu Gastronômico",
     },
     {
       icon: <Coffee className="h-6 w-6 text-accent" />,
@@ -118,7 +118,7 @@ const Sobre = () => {
                       encontrar harmoniosamente.
                     </p>
                     <p>
-                      Localizado no coração de São Paulo, nosso café se tornou
+                      Localizado no coração de Lisboa, nosso café se tornou
                       rapidamente um ponto de encontro para músicos, artistas e
                       amantes da boa música. Cada detalhe foi pensado para criar
                       uma atmosfera única que transporta nossos clientes para os

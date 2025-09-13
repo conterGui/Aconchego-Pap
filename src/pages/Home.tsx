@@ -92,7 +92,7 @@ const Home = () => {
                 className="group hover:shadow-elegant transition-all duration-300"
               >
                 <CardHeader>
-                  <div className="w-full h-48 bg-muted rounded-50 mb-4 flex items-center justify-center overflow-hidden">
+                  <div className="w-full h-48 overflow-hidden rounded-md mb-4 flex items-center justify-center">
                     {item.image ? (
                       <img
                         src={item.image}
