@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cartcontext";
 import { Plus, Minus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const { items, removeItem, updateQuantity, totalPrice } = useCart();
@@ -73,7 +74,12 @@ const Cart = () => {
           </span>
         </div>
       )}
-      <Button>Avanças para o Checkout</Button>
+      <Button
+        asChild
+        className="w-full bg-gradient-gold text-primary shadow-gold hover:shadow-elegant"
+      >
+        <Link to="/checkout">Finalizar Compra</Link>
+      </Button>
     </div>
   );
 };

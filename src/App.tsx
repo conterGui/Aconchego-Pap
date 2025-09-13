@@ -12,6 +12,7 @@ import Sobre from "./pages/Sobre";
 import Contato from "./pages/Contato";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "@/context/cartcontext";
+import Checkout from "./pages/Checkout";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +21,6 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      {/* CartProvider envolve todo o app */}
       <CartProvider>
         <BrowserRouter>
           <Routes>
@@ -31,7 +31,7 @@ const App = () => (
             <Route path="/reservas" element={<Reservas />} />
             <Route path="/sobre" element={<Sobre />} />
             <Route path="/contato" element={<Contato />} />
-            {/* Catch-all */}
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

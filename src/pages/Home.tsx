@@ -54,13 +54,23 @@ const Home = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center bg-gradient-subtle">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <section
+        className="relative flex items-center justify-center h-[550px] w-full max-w-6xl mx-auto rounded-xl overflow-hidden"
+        style={{
+          backgroundImage: "url('/bg.jpeg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* Overlay escuro mais forte */}
+        <div className="absolute inset-0 bg-black/75"></div>
+
+        {/* Conteúdo */}
         <div className="relative z-10 text-center px-4">
-          <h1 className="font-playfair font-bold text-5xl md:text-7xl text-foreground mb-6">
+          <h1 className="font-playfair font-bold text-4xl md:text-5xl text-foreground mb-4">
             Bem-vindo ao <Typewriter />
           </h1>
-          <p className="font-inter text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="font-inter text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
             Uma experiência única onde o aroma do café se encontra com a soul do
             jazz
           </p>
