@@ -26,7 +26,7 @@ const Menu = () => {
     {
       id: 1,
       name: "Espresso Jazz",
-      price: 8.5,
+      price: 1.9,
       description: "Blend exclusivo da casa com notas de chocolate amargo",
       category: "cafes",
       image: "/menu/expresso.png",
@@ -34,7 +34,7 @@ const Menu = () => {
     {
       id: 2,
       name: "Cappuccino Blue Note",
-      price: 12.0,
+      price: 2.5,
       description: "Cappuccino cremoso com arte latte e canela",
       category: "cafes",
       image: "/menu/capuccino.png",
@@ -42,7 +42,7 @@ const Menu = () => {
     {
       id: 3,
       name: "Macchiato Miles",
-      price: 10.5,
+      price: 2.2,
       description: "Espresso com espuma de leite e caramelo",
       category: "cafes",
       image: "/menu/macciato.png",
@@ -50,7 +50,7 @@ const Menu = () => {
     {
       id: 4,
       name: "Café Filtrado V60",
-      price: 14.9,
+      price: 2.8,
       description: "Método manual com grãos especiais, acidez equilibrada",
       category: "cafes",
       isSpecial: true,
@@ -59,7 +59,7 @@ const Menu = () => {
     {
       id: 5,
       name: "Cold Brew Coltrane",
-      price: 13.5,
+      price: 2.7,
       description: "Extração a frio por 24h, doce e suave",
       category: "cafes",
       image: "/menu/coldbrew.png",
@@ -69,7 +69,7 @@ const Menu = () => {
     {
       id: 6,
       name: "Chocolate Quente Duke",
-      price: 11.9,
+      price: 2.5,
       description: "Chocolate belga com chantilly e marshmallow",
       category: "bebidas",
       allergens: ["leite"],
@@ -78,7 +78,7 @@ const Menu = () => {
     {
       id: 7,
       name: "Chai Latte Ella",
-      price: 13.9,
+      price: 2.7,
       description: "Especiarias indianas com leite vaporizado",
       category: "bebidas",
       allergens: ["leite"],
@@ -87,7 +87,7 @@ const Menu = () => {
     {
       id: 8,
       name: "Smoothie Berry Fitzgerald",
-      price: 16.9,
+      price: 3.2,
       description: "Frutas vermelhas, banana e iogurte grego",
       category: "bebidas",
       allergens: ["leite"],
@@ -96,7 +96,7 @@ const Menu = () => {
     {
       id: 9,
       name: "Limonada Sparkling",
-      price: 9.9,
+      price: 1.8,
       description: "Limão siciliano, água com gás e hortelã",
       category: "bebidas",
       image: "/menu/lemonade.png",
@@ -104,7 +104,7 @@ const Menu = () => {
     {
       id: 10,
       name: "Suco Natural Armstrong",
-      price: 8.9,
+      price: 1.9,
       description: "Laranja, cenoura e gengibre",
       category: "bebidas",
       image: "/menu/juice.png",
@@ -114,7 +114,7 @@ const Menu = () => {
     {
       id: 11,
       name: "Cheesecake New York",
-      price: 15.9,
+      price: 3.2,
       description: "Clássico americano com calda de frutas vermelhas",
       category: "doces",
       allergens: ["leite", "ovos", "glúten"],
@@ -124,7 +124,7 @@ const Menu = () => {
     {
       id: 12,
       name: "Brownie Davis",
-      price: 12.9,
+      price: 2.8,
       description: "Chocolate meio amargo com nozes e sorvete",
       category: "doces",
       allergens: ["leite", "ovos", "glúten", "nozes"],
@@ -133,7 +133,7 @@ const Menu = () => {
     {
       id: 13,
       name: "Tiramisu Monk",
-      price: 17.9,
+      price: 3.5,
       description: "Clássico italiano com café espresso",
       category: "doces",
       allergens: ["leite", "ovos", "glúten"],
@@ -142,7 +142,7 @@ const Menu = () => {
     {
       id: 14,
       name: "Croissant de Amêndoa",
-      price: 8.9,
+      price: 1.9,
       description: "Massa folhada com creme de amêndoas",
       category: "doces",
       allergens: ["leite", "ovos", "glúten", "amêndoas"],
@@ -151,7 +151,7 @@ const Menu = () => {
     {
       id: 15,
       name: "Muffin de Blueberry",
-      price: 7.9,
+      price: 1.7,
       description: "Muffin artesanal com frutas frescas",
       category: "doces",
       allergens: ["leite", "ovos", "glúten"],
@@ -162,7 +162,7 @@ const Menu = () => {
     {
       id: 16,
       name: "Affogato al Caffè",
-      price: 14.9,
+      price: 3.0,
       description: "Sorvete de baunilha afogado no espresso quente",
       category: "especiais",
       allergens: ["leite"],
@@ -172,7 +172,7 @@ const Menu = () => {
     {
       id: 17,
       name: "Irish Coffee Parker",
-      price: 18.9,
+      price: 3.5,
       description: "Café, whisky irlandês, açúcar e chantilly",
       category: "especiais",
       allergens: ["leite"],
@@ -182,7 +182,7 @@ const Menu = () => {
     {
       id: 18,
       name: "Café Bombom Jobim",
-      price: 13.9,
+      price: 2.7,
       description: "Espresso com leite condensado em camadas",
       category: "especiais",
       allergens: ["leite"],

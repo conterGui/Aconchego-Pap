@@ -36,18 +36,18 @@ const Loja = () => {
     {
       id: 1,
       name: "Blend Jazz Especial",
-      price: 35.9,
+      price: 12.5,
       weight: "250g",
       roast: "medio",
       type: "grao",
       origin: "Brasil/Colômbia",
       description: "Blend exclusivo da casa com notas de chocolate e caramelo",
-      inStock: true,
+      inStock: false,
     },
     {
       id: 2,
       name: "Espresso Forte",
-      price: 42.5,
+      price: 18.0,
       weight: "500g",
       roast: "escuro",
       type: "moido",
@@ -58,18 +58,18 @@ const Loja = () => {
     {
       id: 3,
       name: "Bourbon Santos",
-      price: 28.9,
+      price: 11.5,
       weight: "250g",
       roast: "claro",
       type: "grao",
       origin: "São Paulo - Brasil",
       description: "Café doce e suave, ideal para métodos filtrados",
-      inStock: false,
+      inStock: true,
     },
     {
       id: 4,
       name: "Colombian Premium",
-      price: 39.9,
+      price: 17.0,
       weight: "500g",
       roast: "medio",
       type: "grao",
@@ -80,7 +80,7 @@ const Loja = () => {
     {
       id: 5,
       name: "Ethiopian Yirgacheffe",
-      price: 45.9,
+      price: 13.5,
       weight: "250g",
       roast: "claro",
       type: "moido",
@@ -91,7 +91,7 @@ const Loja = () => {
     {
       id: 6,
       name: "French Roast",
-      price: 33.9,
+      price: 22.0,
       weight: "1kg",
       roast: "escuro",
       type: "grao",
@@ -254,7 +254,7 @@ const Loja = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="font-bold text-accent text-2xl">
-                          R$ {product.price.toFixed(2).replace(".", ",")}
+                          € {product.price.toFixed(2).replace(".", ",")}
                         </span>
                         <div className="text-xs text-muted-foreground">
                           por {product.weight}

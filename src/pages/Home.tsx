@@ -9,21 +9,21 @@ import Typewriter from "@/components/dinamicFonts";
 const Home = () => {
   const menuHighlights = [
     {
-      name: "Espresso Especial",
-      price: "8,50",
-      description: "Blend exclusivo da casa",
+      name: "Café Filtrado V60",
+      price: "2,80",
+      description: "Método manual com grãos especiais, acidez equilibrada",
       image: "/home/one.png",
     },
     {
-      name: "Cappuccino Jazz",
-      price: "12,00",
-      description: "Com arte latte especial",
+      name: "Cappuccino Blue Note",
+      price: "2,50",
+      description: "Cappuccino cremoso com arte latte e canela",
       image: "/home/two.png",
     },
     {
-      name: "Cheesecake NY",
-      price: "15,90",
-      description: "Sobremesa da casa",
+      name: "Cheesecake New York",
+      price: "3,20",
+      description: "Clássico americano com calda de frutas vermelhas",
       image: "/home/three.png",
     },
   ];
@@ -31,21 +31,21 @@ const Home = () => {
   const events = [
     {
       date: "15 JAN",
-      name: "Noite do Jazz",
-      description: "Trio de jazz ao vivo",
-      time: "20h",
+      name: "Noite do Jazz Clássico",
+      description: "Trio Bossa Jazz",
+      time: "20:00h",
     },
     {
       date: "22 JAN",
-      name: "Degustação de Cafés",
-      description: "Especiais do mundo",
-      time: "15h",
+      name: "Degustação de Cafés do Mundo",
+      description: "Sommelier de café Ana Costa",
+      time: "16:30h",
     },
     {
-      date: "29 JAN",
-      name: "Open Mic Night",
-      description: "Músicos locais",
-      time: "19h",
+      date: "01 FEV",
+      name: "Masterclass: Torra Artesanal",
+      description: "Mestre torrador convidado",
+      time: "14:00h",
     },
   ];
 
@@ -127,7 +127,7 @@ const Home = () => {
                       € {item.price}
                     </span>
                     <Button variant="outline" size="sm">
-                      Ver mais
+                      <Link to="/menu">Ver mais</Link>
                     </Button>
                   </div>
                 </CardContent>
