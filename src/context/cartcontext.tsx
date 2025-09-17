@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 export type CartItem = {
   id: number;
@@ -18,15 +24,32 @@ type CartContextType = {
   totalPrice: number;
 };
 
-// Inicializa com valor dummy
 const CartContext = createContext<CartContextType>({} as CartContextType);
 
 interface CartProviderProps {
-  children: ReactNode; // aqui deve ser ReactNode
+  children: ReactNode;
 }
 
 export const CartProvider = ({ children }: CartProviderProps) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  // Inicializa o estado a partir do localStorage
+  const [items, setItems] = useState<CartItem[]>(() => {
+    try {
+      const stored = localStorage.getItem("cart");
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error("Erro ao ler o carrinho do localStorage:", error);
+      return [];
+    }
+  });
+
+  // Sempre que items mudar, atualiza o localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("cart", JSON.stringify(items));
+    } catch (error) {
+      console.error("Erro ao salvar o carrinho no localStorage:", error);
+    }
+  }, [items]);
 
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = items.reduce(
@@ -48,10 +71,12 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   const removeItem = (id: number) =>
     setItems((prev) => prev.filter((i) => i.id !== id));
+
   const updateQuantity = (id: number, quantity: number) => {
     if (quantity < 1) return;
     setItems((prev) => prev.map((i) => (i.id === id ? { ...i, quantity } : i)));
   };
+
   const clearCart = () => setItems([]);
 
   return (
