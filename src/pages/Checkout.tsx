@@ -77,16 +77,16 @@ const FinalizarCompra = () => {
         }),
       });
 
-      if (!response.ok) throw new Error("Erro ao enviar email");
+      if (!response.ok) throw new Error("Erro concluir pedido");
 
-      toast.success("Pedido confirmado! Email enviado com sucesso.");
+      toast.success("Pedido confirmado! Enviaremos uma confirmação por email");
 
       // Limpa carrinho e formulário
       clearCart();
       setCustomerInfo({ nome: "", email: "", morada: "", cidade: "" });
       setCardInfo({ numero: "", validade: "", cvc: "" });
     } catch (err) {
-      toast.error("Erro ao enviar email. Tente novamente.");
+      toast.error("Erro ao concluir pedido. Tente novamente.");
     }
   };
 
