@@ -28,7 +28,7 @@ const Eventos = () => {
       description:
         "Uma noite especial com os clássicos do jazz americano. Trio formado por piano, contrabaixo e bateria apresenta sucessos de Miles Davis, John Coltrane e Bill Evans.",
       artist: "Trio Bossa Jazz",
-      price: 45.0,
+      price: 30.0, // Ajustado
       venue: "Salão Principal",
       category: "jazz",
       featured: true,
@@ -41,7 +41,7 @@ const Eventos = () => {
       description:
         "Aprenda técnicas profissionais de latte art com nosso barista especializado. Inclui certificado e degustação de cafés especiais.",
       artist: "Chef Barista Roberto Silva",
-      price: 75.0,
+      price: 35.0, // Preço mais acessível
       venue: "Espaço Gourmet",
       category: "workshop",
     },
@@ -53,7 +53,7 @@ const Eventos = () => {
       description:
         "Viagem pelos sabores dos melhores cafés do mundo. Degustação comentada de 8 origens diferentes com harmonização de doces.",
       artist: "Sommelier de Café Ana Costa",
-      price: 65.0,
+      price: 40.0, // Ajustado
       venue: "Mesa do Sommelier",
       category: "degustacao",
       featured: true,
@@ -66,7 +66,7 @@ const Eventos = () => {
       description:
         "Encontro entre música e literatura. Poetas locais declamam enquanto o quarteto de jazz improvisa acompanhamentos únicos.",
       artist: "Quarteto Verbal & Jazz",
-      price: 35.0,
+      price: 25.0, // Ajustado
       venue: "Salão Principal",
       category: "especial",
     },
@@ -78,7 +78,7 @@ const Eventos = () => {
       description:
         "Brunch especial com o melhor da bossa nova brasileira. Inclui café da manhã completo e apresentação ao vivo.",
       artist: "Duo Ipanema",
-      price: 55.0,
+      price: 40.0, // Ajustado
       venue: "Terraço Jazz",
       category: "jazz",
     },
@@ -90,7 +90,7 @@ const Eventos = () => {
       description:
         "Processo completo da torra artesanal de café. Dos grãos verdes até a xícara perfeita. Leve sua própria mistura para casa.",
       artist: "Mestre Torrador João Café",
-      price: 85.0,
+      price: 45.0, // Preço mais acessível
       venue: "Torrefação",
       category: "workshop",
       featured: true,
@@ -103,7 +103,7 @@ const Eventos = () => {
       description:
         "Cada músico apresenta seu instrumento em solos únicos. Piano, saxofone, trompete e guitarra em harmonias improvisadas.",
       artist: "Coletivo Jazz SP",
-      price: 40.0,
+      price: 30.0, // Ajustado
       venue: "Salão Principal",
       category: "jazz",
     },
@@ -115,7 +115,7 @@ const Eventos = () => {
       description:
         "Celebração dos métodos de extração a frio. Cold brew, ice drip, nitro coffee e criações autorais dos nossos baristas.",
       artist: "Equipe Aconchego",
-      price: 25.0,
+      price: 18.0, // Ajustado para acessibilidade
       venue: "Todo o Café",
       category: "degustacao",
     },
@@ -235,7 +235,7 @@ const Eventos = () => {
                         <div className="flex items-center space-x-2">
                           <Ticket className="h-4 w-4 text-accent" />
                           <span className="font-bold text-accent text-lg">
-                            R$ {event.price.toFixed(2).replace(".", ",")}
+                            € {event.price.toFixed(2).replace(".", ",")}
                           </span>
                         </div>
                         <Button
