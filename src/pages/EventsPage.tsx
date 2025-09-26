@@ -64,7 +64,7 @@ const EventPage = () => {
 
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         {/* Back Button */}
-        <div className="mb-6">
+        <div className="mb-6  mt-10">
           <Link
             to="/eventos"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-accent transition-colors group"
@@ -81,10 +81,15 @@ const EventPage = () => {
               <Card className="shadow-elegant border-0">
                 {/* Hero Section */}
                 <div className="relative overflow-hidden rounded-t-lg">
-                  <div className="h-48 md:h-64 bg-gradient-to-r from-accent/20 via-accent/10 to-transparent flex items-center justify-center">
-                    <Music className="w-16 h-16 text-accent/60" />
+                  <div className="h-48 md:h-64 bg-gradient-to-r from-accent/20 via-accent/10 to-transparent relative overflow-hidden">
+                    {event.image && (
+                      <img
+                        src={event.image}
+                        alt="Event"
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    )}
                   </div>
-
                   {/* Share Button */}
                   <div className="absolute top-4 right-4">
                     <button

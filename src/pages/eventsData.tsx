@@ -1,5 +1,6 @@
 export type Event = {
   id: number;
+  image?: string;
   title: string;
   date: string;
   time: string;
@@ -14,6 +15,7 @@ export type Event = {
 export const events: Event[] = [
   {
     id: 1,
+    image: "/events/jazzClassico.jpg",
     title: "Noite do Jazz Clássico",
     date: "2024-01-15",
     time: "20:00",
@@ -27,6 +29,7 @@ export const events: Event[] = [
   },
   {
     id: 2,
+    image: "/events/arteLatte.jpg",
     title: "Workshop: Arte do Latte",
     date: "2024-01-18",
     time: "15:00",
@@ -39,6 +42,7 @@ export const events: Event[] = [
   },
   {
     id: 3,
+    image: "/events/cafesMundo.png",
     title: "Degustação de Cafés do Mundo",
     date: "2024-01-22",
     time: "16:30",
@@ -48,10 +52,10 @@ export const events: Event[] = [
     price: 40.0, // Ajustado
     venue: "Mesa do Sommelier",
     category: "degustacao",
-    featured: true,
   },
   {
     id: 4,
+    image: "/events/jazzPoetry.jpg",
     title: "Jazz & Poetry Night",
     date: "2024-01-25",
     time: "19:30",
@@ -64,6 +68,7 @@ export const events: Event[] = [
   },
   {
     id: 5,
+    image: "/events/bossaNova.jpg",
     title: "Manhã de Bossa Nova",
     date: "2024-01-28",
     time: "10:00",
@@ -76,6 +81,7 @@ export const events: Event[] = [
   },
   {
     id: 6,
+    image: "/events/torraCafe.jpg",
     title: "Masterclass: Torra Artesanal",
     date: "2024-02-01",
     time: "14:00",
@@ -89,6 +95,7 @@ export const events: Event[] = [
   },
   {
     id: 7,
+    image: "/events/instrumentos.jpg",
     title: "Noite dos Instrumentos",
     date: "2024-02-05",
     time: "21:00",
@@ -101,6 +108,7 @@ export const events: Event[] = [
   },
   {
     id: 8,
+    image: "/events/cafeGelado.jpg",
     title: "Festival do Café Gelado",
     date: "2024-02-08",
     time: "13:00",
