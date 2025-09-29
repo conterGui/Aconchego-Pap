@@ -14,6 +14,11 @@ import NotFound from "./pages/NotFound";
 import { CartProvider } from "@/context/cartcontext";
 import Checkout from "./pages/Checkout";
 import EventsPage from "./pages/EventsPage";
+import HomeAdmin from "./pages/admin/HomeAdmin";
+import EventsAdmin from "./pages/admin/EventsAdmin";
+import FinancesAdmin from "./pages/admin/FinancesAdmin";
+import StockAdmin from "./pages/admin/StockAdmin";
+import ReservasAdmin from "./pages/admin/ReservasAdmin";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +40,11 @@ const App = () => (
             <Route path="/sobre" element={<Sobre />} />
             <Route path="/contato" element={<Contato />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/admin" element={<HomeAdmin />} />
+            <Route path="/admin/estoque" element={<StockAdmin />} />
+            <Route path="/admin/financas" element={<FinancesAdmin />} />
+            <Route path="/admin/eventos" element={<EventsAdmin />} />
+            <Route path="/admin/reservas" element={<ReservasAdmin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
