@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import HeaderAdmin from "@/components/HeaderAdmin";
+import { Plus, Search } from "lucide-react";
 
 export default function StorkAdmin() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -49,14 +50,20 @@ export default function StorkAdmin() {
   };
 
   return (
-    <div className="space-y-6 mt-12 p-6">
+    <div className="p-6 space-y-10">
       <HeaderAdmin />
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Gerenciamento de Produtos</h1>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Gerenciamento de Estoque
+        </h1>
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button>Adicionar Produto</Button>
+            <Button className="flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Adicionar Produto
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -67,72 +74,109 @@ export default function StorkAdmin() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {products.map((product) => (
-          <Card key={product.id}>
-            <CardHeader>
-              {product.image && (
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  width={400}
-                  height={200}
-                  className="rounded-lg object-cover w-full h-40"
-                />
-              )}
-              <CardTitle>{product.name}</CardTitle>
-              <CardDescription>
-                {product.roast.charAt(0).toUpperCase() + product.roast.slice(1)}{" "}
-                • {product.weight}
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-3">
-              <p className="text-sm text-muted-foreground">
-                {product.description}
-              </p>
-              <p className="font-semibold">€ {product.price.toFixed(2)}</p>
-              <p className="text-sm text-muted-foreground">
-                Origem: {product.origin}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Tipo: {product.type}
-              </p>
-
-              {product.inStock ? (
-                <Badge className="bg-green-500">Em stock</Badge>
-              ) : (
-                <Badge variant="destructive">Esgotado</Badge>
-              )}
-
-              <div className="flex gap-2 pt-2">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      onClick={() => setEditingProduct(product)}
-                    >
-                      Editar
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Editar Produto</DialogTitle>
-                    </DialogHeader>
-                    <ProductForm initialData={product} onSave={handleSave} />
-                  </DialogContent>
-                </Dialog>
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDelete(product.id)}
-                >
-                  Excluir
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {/* Pesquisa */}
+      <div className="relative mb-4 max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Pesquisar produto..."
+          onChange={(e) => {
+            const value = e.target.value.toLowerCase();
+            setProducts(
+              value
+                ? initialProducts.filter((p) =>
+                    p.name.toLowerCase().includes(value)
+                  )
+                : initialProducts
+            );
+          }}
+          className="pl-9"
+        />
       </div>
+
+      {/* Lista de Produtos */}
+      {products.length > 0 ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((product) => (
+            <Card
+              key={product.id}
+              className="overflow-hidden hover:shadow-md transition-all duration-200"
+            >
+              {product.image && (
+                <div className="relative w-full h-52">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-contain bg-transparent p-2"
+                  />
+                </div>
+              )}
+
+              <CardHeader className="space-y-1">
+                <CardTitle className="text-lg font-medium">
+                  {product.name}
+                </CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">
+                  {product.roast.charAt(0).toUpperCase() +
+                    product.roast.slice(1)}{" "}
+                  • {product.weight}
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-3 pt-2">
+                <p className="text-sm text-muted-foreground line-clamp-3">
+                  {product.description}
+                </p>
+
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-base">
+                    € {product.price.toFixed(2)}
+                  </span>
+                  {product.inStock ? (
+                    <Badge className="bg-green-500">Em stock</Badge>
+                  ) : (
+                    <Badge variant="destructive">Esgotado</Badge>
+                  )}
+                </div>
+
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>Origem: {product.origin}</p>
+                  <p>Tipo: {product.type}</p>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-3">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        onClick={() => setEditingProduct(product)}
+                      >
+                        Editar
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Editar Produto</DialogTitle>
+                      </DialogHeader>
+                      <ProductForm initialData={product} onSave={handleSave} />
+                    </DialogContent>
+                  </Dialog>
+
+                  <Button
+                    variant="destructive"
+                    onClick={() => handleDelete(product.id)}
+                  >
+                    Excluir
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-muted-foreground py-12 text-sm">
+          Nenhum produto encontrado.
+        </div>
+      )}
     </div>
   );
 }
@@ -172,13 +216,29 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 max-h-[80vh] overflow-y-auto p-1"
+    >
+      {/* Preview da imagem */}
+      {formData.image && (
+        <div className="w-full flex justify-center bg-transparent">
+          <img
+            src={formData.image}
+            alt={formData.name || "Pré-visualização"}
+            className="w-full max-w-md h-56 object-contain rounded-lg shadow-sm bg-transparent"
+          />
+        </div>
+      )}
+
+      {/* Nome e descrição */}
       <div className="space-y-2">
         <Label>Nome</Label>
         <Input
           value={formData.name}
           onChange={(e) => handleChange("name", e.target.value)}
           placeholder="Ex: Blend Jazz Especial"
+          required
         />
       </div>
 
@@ -188,31 +248,38 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
           value={formData.description}
           onChange={(e) => handleChange("description", e.target.value)}
           placeholder="Breve descrição do produto"
+          rows={3}
         />
       </div>
 
-      <div className="flex gap-4">
-        <div className="flex-1 space-y-2">
+      {/* Preço e Peso */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
           <Label>Preço (€)</Label>
           <Input
             type="number"
             step="0.1"
             value={formData.price}
-            onChange={(e) => handleChange("price", parseFloat(e.target.value))}
+            onChange={(e) =>
+              handleChange("price", parseFloat(e.target.value) || 0)
+            }
+            required
           />
         </div>
-        <div className="flex-1 space-y-2">
+        <div className="space-y-2">
           <Label>Peso</Label>
           <Input
             value={formData.weight}
             onChange={(e) => handleChange("weight", e.target.value)}
             placeholder="Ex: 250g"
+            required
           />
         </div>
       </div>
 
-      <div className="flex gap-4">
-        <div className="flex-1 space-y-2">
+      {/* Torra e Tipo */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
           <Label>Torra</Label>
           <Select
             value={formData.roast}
@@ -229,7 +296,7 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
           </Select>
         </div>
 
-        <div className="flex-1 space-y-2">
+        <div className="space-y-2">
           <Label>Tipo</Label>
           <Select
             value={formData.type}
@@ -246,6 +313,7 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         </div>
       </div>
 
+      {/* Origem */}
       <div className="space-y-2">
         <Label>Origem</Label>
         <Input
@@ -255,6 +323,7 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         />
       </div>
 
+      {/* Imagem */}
       <div className="space-y-2">
         <Label>Imagem (URL)</Label>
         <Input
@@ -264,16 +333,18 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         />
       </div>
 
-      <div className="flex items-center justify-between">
-        <Label>Em Stock</Label>
+      {/* Estoque */}
+      <div className="flex items-center justify-between border-t pt-4">
+        <Label>Disponível em Stock</Label>
         <Switch
           checked={formData.inStock}
           onCheckedChange={(checked) => handleChange("inStock", checked)}
         />
       </div>
 
-      <Button type="submit" className="w-full">
-        Salvar
+      {/* Botão */}
+      <Button type="submit" className="w-full mt-4">
+        {initialData ? "Salvar Alterações" : "Adicionar Produto"}
       </Button>
     </form>
   );

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, Coffee } from "lucide-react";
 import { useCart } from "@/context/cartcontext";
 import Cart from "@/pages/Cart";
 
@@ -38,14 +38,14 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background-color backdrop-blur-sm border-border">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-gradient-gold rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-playfair font-bold text-lg ">
-                <img src="/favicon.png" className="w-6 h-6" />
+                <Coffee />
               </span>
             </div>
             <span className="font-playfair font-bold text-xl text-foreground">

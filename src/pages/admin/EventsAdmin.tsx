@@ -114,13 +114,13 @@ export default function EventsAdmin() {
       </div>
 
       {/* Pesquisa */}
-      <div className="flex items-center gap-2 mb-6">
-        <Search className="w-4 h-4 text-muted-foreground" />
+      <div className="relative mb-4 max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Pesquisar evento..."
+          placeholder="Pesquisar produto..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-sm"
+          className="pl-9"
         />
       </div>
 

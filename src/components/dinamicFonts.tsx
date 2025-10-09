@@ -1,38 +1,43 @@
 import { useState, useEffect } from "react";
 
-const Typewriter = () => {
-  const text = "Aconchego";
+interface TypewriterProps {
+  text?: string;
+  speed?: number; // tempo entre cada letra em ms
+  className?: string;
+}
+
+const Typewriter: React.FC<TypewriterProps> = ({
+  text = "Aconchego",
+  speed = 150,
+  className = "font-playfair text-5xl md:text-7xl text-foreground font-bold",
+}) => {
   const [displayed, setDisplayed] = useState("");
   const [index, setIndex] = useState(0);
-  const [blinkCount, setBlinkCount] = useState(0);
   const [showCursor, setShowCursor] = useState(true);
 
+  // Digitação da palavra
   useEffect(() => {
     if (index < text.length) {
-      const interval = setInterval(() => {
+      const timeout = setTimeout(() => {
         setDisplayed((prev) => prev + text[index]);
         setIndex((prev) => prev + 1);
-      }, 150);
-      return () => clearInterval(interval);
-    } else {
-      const blinkInterval = setInterval(() => {
-        setShowCursor((prev) => !prev);
-        setBlinkCount((prev) => prev + 1);
-      }, 500);
-
-      if (blinkCount >= 6) {
-        clearInterval(blinkInterval);
-        setShowCursor(false);
-      }
-
-      return () => clearInterval(blinkInterval);
+      }, speed);
+      return () => clearTimeout(timeout);
     }
-  }, [index, blinkCount]);
+  }, [index, text, speed]);
+
+  // Cursor piscando indefinidamente
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 500);
+    return () => clearInterval(cursorInterval);
+  }, []);
 
   return (
-    <span className="font-playfair text-5xl md:text-7xl text-foreground font-bold">
+    <span className={className}>
       {displayed}
-      {showCursor && <span>|</span>}
+      {showCursor && <span className="animate-blink">|</span>}
     </span>
   );
 };

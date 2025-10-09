@@ -73,7 +73,7 @@ const Sobre = () => {
     {
       icon: <Music className="h-6 w-6 text-accent" />,
       title: "Melhor Espaço Cultural",
-      description: "Guia Jazz Brasil 2023",
+      description: "Guia Jazz Europa 2023",
     },
     {
       icon: <Users className="h-6 w-6 text-accent" />,
@@ -133,14 +133,26 @@ const Sobre = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
-                    <Coffee className="h-12 w-12 text-muted-foreground" />
+                  <div className="overflow-hidden w-full h-48 bg-muted rounded-lg flex items-center justify-center">
+                    <img
+                      src="/sobre/jazz.jpg"
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />{" "}
                   </div>
-                  <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
-                    <Music className="h-12 w-12 text-muted-foreground" />
+                  <div className="overflow-hidden w-full h-48 bg-muted rounded-lg flex items-center justify-center">
+                    <img
+                      src="/sobre/historiacafe.jpg"
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center col-span-2">
-                    <Users className="h-12 w-12 text-muted-foreground" />
+                  <div className="overflow-hidden w-full h-48 bg-muted rounded-lg flex items-center justify-center col-span-2">
+                    <img
+                      src="/sobre/cafeteria.jpg"
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               </div>

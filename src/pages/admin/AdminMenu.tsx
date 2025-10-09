@@ -80,14 +80,17 @@ export default function MenuAdmin() {
   return (
     <div className="p-6">
       <HeaderAdmin />
+
       {/* Header */}
-      <div className="flex justify-between items-center mb-6 mt-12">
-        <h1 className="text-2xl font-semibold">Gerenciamento de Stock</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 mt-12">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Gerenciamento de Menu
+        </h1>
 
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
+            <Button className="flex items-center gap-2">
+              <Plus className="w-4 h-4" />
               Adicionar Produto
             </Button>
           </DialogTrigger>
@@ -95,7 +98,6 @@ export default function MenuAdmin() {
             <DialogHeader>
               <DialogTitle>Novo Produto</DialogTitle>
             </DialogHeader>
-
             <StockForm
               formData={formData}
               setFormData={setFormData}
@@ -107,66 +109,86 @@ export default function MenuAdmin() {
       </div>
 
       {/* Pesquisa */}
-      <div className="flex items-center gap-2 mb-6">
-        <Search className="w-4 h-4 text-muted-foreground" />
+      <div className="relative mb-4 max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder="Pesquisar produto..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-sm"
+          className="pl-9"
         />
       </div>
 
       {/* Lista de produtos */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredItems.map((item) => (
-          <Card key={item.id} className="overflow-hidden">
-            <CardHeader className="p-0">
+      {filteredItems.length > 0 ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredItems.map((item) => (
+            <Card
+              key={item.id}
+              className="overflow-hidden hover:shadow-md transition-all duration-200"
+            >
               {item.image && (
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-40 object-cover"
-                />
+                <div className="w-full h-40 bg-muted">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               )}
-            </CardHeader>
-            <CardContent className="p-4 space-y-2">
-              <CardTitle className="flex justify-between items-center">
-                <span>{item.name}</span>
-                {item.isSpecial && (
-                  <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded">
-                    Especial
-                  </span>
-                )}
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                {item.description}
-              </p>
-              <p className="text-sm font-semibold">{item.price.toFixed(2)} €</p>
-              <p className="text-xs text-muted-foreground capitalize">
-                Categoria: {item.category}
-              </p>
 
-              <div className="flex justify-end gap-2 pt-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleEdit(item)}
-                >
-                  <Pencil className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleDelete(item.id)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <CardContent className="p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg font-medium">
+                      {item.name}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  {item.isSpecial && (
+                    <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded">
+                      Especial
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-semibold">
+                    {item.price.toFixed(2)} €
+                  </span>
+                  <span className="text-xs text-muted-foreground capitalize">
+                    {item.category}
+                  </span>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-3">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleEdit(item)}
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center text-muted-foreground py-12 text-sm">
+          Nenhum produto encontrado.
+        </div>
+      )}
 
       {/* Modal de edição */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
@@ -174,7 +196,6 @@ export default function MenuAdmin() {
           <DialogHeader>
             <DialogTitle>Editar Produto</DialogTitle>
           </DialogHeader>
-
           <StockForm
             formData={formData}
             setFormData={setFormData}
@@ -207,30 +228,49 @@ function StockForm({
         e.preventDefault();
         onSubmit();
       }}
-      className="space-y-4"
+      className="space-y-6 max-h-[80vh] overflow-y-auto p-1"
     >
-      <div className="space-y-2">
-        <Label>Nome</Label>
-        <Input
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Nome do produto"
-          required
-        />
+      {/* Preview da imagem */}
+      {formData.image && (
+        <div className="w-full flex justify-center bg-transparent">
+          <img
+            src={formData.image}
+            alt={formData.name || "Pré-visualização"}
+            className="w-full max-w-md h-56 object-contain rounded-lg shadow-sm bg-transparent"
+          />
+        </div>
+      )}
+
+      {/* Nome e Preço lado a lado */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Nome</Label>
+          <Input
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Nome do produto"
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Preço (€)</Label>
+          <Input
+            type="number"
+            step="0.1"
+            value={formData.price}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                price: parseFloat(e.target.value) || 0,
+              })
+            }
+            required
+          />
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <Label>Preço (€)</Label>
-        <Input
-          type="number"
-          value={formData.price}
-          onChange={(e) =>
-            setFormData({ ...formData, price: parseFloat(e.target.value) })
-          }
-          required
-        />
-      </div>
-
+      {/* Descrição */}
       <div className="space-y-2">
         <Label>Descrição</Label>
         <Textarea
@@ -239,10 +279,12 @@ function StockForm({
             setFormData({ ...formData, description: e.target.value })
           }
           placeholder="Descreve o produto..."
+          rows={3}
           required
         />
       </div>
 
+      {/* Categoria */}
       <div className="space-y-2">
         <Label>Categoria</Label>
         <Input
@@ -255,6 +297,7 @@ function StockForm({
         />
       </div>
 
+      {/* Imagem */}
       <div className="space-y-2">
         <Label>Imagem (URL)</Label>
         <Input
@@ -264,7 +307,8 @@ function StockForm({
         />
       </div>
 
-      <DialogFooter className="flex justify-end gap-2 pt-2">
+      {/* Botões */}
+      <DialogFooter className="flex justify-end gap-2 pt-4 border-t">
         <Button variant="outline" type="button" onClick={onCancel}>
           Cancelar
         </Button>
