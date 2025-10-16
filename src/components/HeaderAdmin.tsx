@@ -13,8 +13,9 @@ const HeaderAdmin = () => {
   const cartRef = useRef<HTMLDivElement>(null); // referência ao popover do carrinho
 
   const menuItems = [
+    { name: "Home", path: "/admin" },
     { name: "Finanças", path: "/admin/financas" },
-    { name: "Stock", path: "/admin/estoque" },
+    { name: "Estoque", path: "/admin/estoque" },
     { name: "Menu", path: "/admin/menu" },
     { name: "Eventos", path: "/admin/eventos" },
     { name: "Reservas", path: "/admin/reservas" },
