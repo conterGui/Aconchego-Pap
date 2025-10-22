@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import HeaderAdmin from "@/components/HeaderAdmin";
 import Footer from "@/components/Footer";
+import { Phone } from "lucide-react";
 
 interface OrderItem {
   productName: string;
@@ -99,7 +100,7 @@ const PedidoDetalhePage = () => {
               <br />
               {order.customerPhone && (
                 <>
-                  📞 {order.customerPhone}
+                  <Phone /> {order.customerPhone}
                   <br />
                 </>
               )}

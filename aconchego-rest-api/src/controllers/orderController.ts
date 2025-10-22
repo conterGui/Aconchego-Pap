@@ -17,7 +17,7 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
       console.log(`🔍 Buscando produto ${item.productId}...`);
       const product = await Product.findById(item.productId);
 
-      if (!product || !product.inStock) {
+      if (!product || !product.available) {
         console.error(`❌ Produto ${item.productId} não encontrado ou indisponível`);
         res.status(400).json({ message: `Product ${item.productId} not available` });
         return;

@@ -12,9 +12,9 @@
 2. Rode o Backend:
 
 ```bash
-cd backend
-node server.js
-npx ts-node server.ts
+cd aconchego-rest-api
+npm install
+npx ts-node src/server.ts
 ```
 
 1. Rode o Frontend:
