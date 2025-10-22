@@ -21,7 +21,8 @@ import MenuAdmin from "./pages/admin/AdminMenu";
 import StockAdmin from "./pages/admin/StockAdmin";
 import ReservasAdmin from "./pages/admin/ReservasAdmin";
 import Login from "./pages/Login";
-import FinancesAdmin from "./pages/admin/FinancesAdmin";
+import PedidosPage from "./pages/admin/PedidosAdmin";
+import PedidoDetalhePage from "./pages/admin/PedidosPage";
 
 const queryClient = new QueryClient();
 
@@ -47,10 +48,11 @@ const App = () => (
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin" element={<HomeAdmin />} />
             <Route path="/admin/estoque" element={<StockAdmin />} />
-            <Route path="/admin/financas" element={<FinancesAdmin />} />
             <Route path="/admin/eventos" element={<EventsAdmin />} />
             <Route path="/admin/reservas" element={<ReservasAdmin />} />
             <Route path="/admin/menu" element={<MenuAdmin />} />
+            <Route path="/admin/pedidos" element={<PedidosPage />} />
+            <Route path="/pedidos/:id" element={<PedidoDetalhePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

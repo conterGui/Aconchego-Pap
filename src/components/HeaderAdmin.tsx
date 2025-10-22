@@ -14,11 +14,12 @@ const HeaderAdmin = () => {
 
   const menuItems = [
     { name: "Home", path: "/admin" },
-    { name: "Finanças", path: "/admin/financas" },
     { name: "Estoque", path: "/admin/estoque" },
     { name: "Menu", path: "/admin/menu" },
     { name: "Eventos", path: "/admin/eventos" },
     { name: "Reservas", path: "/admin/reservas" },
+    { name: "Pedidos", path: "/admin/pedidos" },
+    { name: "User page", path: "/home" },
   ];
 
   const isActive = (path: string) => location.pathname === path;

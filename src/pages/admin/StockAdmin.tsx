@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Product, products as initialProducts } from "../data/lojaData";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -31,34 +30,75 @@ import HeaderAdmin from "@/components/HeaderAdmin";
 import { Plus, Search } from "lucide-react";
 
 export default function StorkAdmin() {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSave = (product: Product) => {
-    if (editingProduct) {
-      setProducts(
-        products.map((p) => (p.id === editingProduct.id ? product : p))
-      );
-    } else {
-      setProducts([...products, { ...product, id: Date.now() }]);
+  // ✅ Buscar produtos do backend
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/products");
+      const data = await res.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
     }
-    setEditingProduct(null);
   };
 
-  const handleDelete = (id: number) => {
-    setProducts(products.filter((p) => p.id !== id));
+  const handleSave = async (product: any) => {
+    try {
+      if (editingProduct) {
+        await fetch(
+          `http://localhost:3000/api/products/${editingProduct._id}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(product),
+          }
+        );
+      } else {
+        await fetch("http://localhost:3000/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(product),
+        });
+      }
+      setEditingProduct(null);
+      fetchProducts();
+    } catch (error) {
+      console.error("Erro ao salvar produto:", error);
+    }
   };
+
+  const handleDelete = async (_id: string) => {
+    try {
+      await fetch(`http://localhost:3000/api/products/${_id}`, {
+        method: "DELETE",
+      });
+      fetchProducts();
+    } catch (error) {
+      console.error("Erro ao deletar produto:", error);
+    }
+  };
+
+  const filteredProducts = searchTerm
+    ? products.filter((p) =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : products;
 
   return (
     <div className="p-6 space-y-10">
       <HeaderAdmin />
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-4xl font-bold text-foreground mb-2">
-            Gerenciamento de Estoque
-          </h1>
-        </div>
+        <h1 className="text-4xl font-bold text-foreground mb-2">
+          Gerenciamento de Estoque
+        </h1>
 
         <Dialog>
           <DialogTrigger asChild>
@@ -81,26 +121,18 @@ export default function StorkAdmin() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder="Pesquisar produto..."
-          onChange={(e) => {
-            const value = e.target.value.toLowerCase();
-            setProducts(
-              value
-                ? initialProducts.filter((p) =>
-                    p.name.toLowerCase().includes(value)
-                  )
-                : initialProducts
-            );
-          }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-9"
         />
       </div>
 
       {/* Lista de Produtos */}
-      {products.length > 0 ? (
+      {filteredProducts.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <Card
-              key={product.id}
+              key={product._id}
               className="overflow-hidden hover:shadow-md transition-all duration-200"
             >
               {product.image && (
@@ -118,8 +150,8 @@ export default function StorkAdmin() {
                   {product.name}
                 </CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
-                  {product.roast.charAt(0).toUpperCase() +
-                    product.roast.slice(1)}{" "}
+                  {product.roast?.charAt(0).toUpperCase() +
+                    product.roast?.slice(1)}{" "}
                   • {product.weight}
                 </CardDescription>
               </CardHeader>
@@ -138,11 +170,6 @@ export default function StorkAdmin() {
                   ) : (
                     <Badge variant="destructive">Esgotado</Badge>
                   )}
-                </div>
-
-                <div className="text-xs text-muted-foreground space-y-1">
-                  <p>Origem: {product.origin}</p>
-                  <p>Tipo: {product.type}</p>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-3">
@@ -165,7 +192,7 @@ export default function StorkAdmin() {
 
                   <Button
                     variant="destructive"
-                    onClick={() => handleDelete(product.id)}
+                    onClick={() => handleDelete(product._id)}
                   >
                     Excluir
                   </Button>
@@ -184,18 +211,16 @@ export default function StorkAdmin() {
 }
 
 // ----------------------
-// FORM COMPONENT
+// FORM COMPONENT INLINE
 // ----------------------
-
 interface ProductFormProps {
-  initialData?: Product;
-  onSave: (product: Product) => void;
+  initialData?: any;
+  onSave: (product: any) => void;
 }
 
 function ProductForm({ initialData, onSave }: ProductFormProps) {
-  const [formData, setFormData] = useState<Product>(
+  const [formData, setFormData] = useState<any>(
     initialData || {
-      id: 0,
       name: "",
       price: 0,
       weight: "",
@@ -208,7 +233,7 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
     }
   );
 
-  const handleChange = (field: keyof Product, value: any) => {
+  const handleChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value });
   };
 
@@ -222,7 +247,6 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
       onSubmit={handleSubmit}
       className="space-y-6 max-h-[80vh] overflow-y-auto p-1"
     >
-      {/* Preview da imagem */}
       {formData.image && (
         <div className="w-full flex justify-center bg-transparent">
           <img
@@ -233,7 +257,6 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         </div>
       )}
 
-      {/* Nome e descrição */}
       <div className="space-y-2">
         <Label>Nome</Label>
         <Input
@@ -254,7 +277,6 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         />
       </div>
 
-      {/* Preço e Peso */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Preço (€)</Label>
@@ -279,7 +301,6 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         </div>
       </div>
 
-      {/* Torra e Tipo */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Torra</Label>
@@ -315,7 +336,6 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         </div>
       </div>
 
-      {/* Origem */}
       <div className="space-y-2">
         <Label>Origem</Label>
         <Input
@@ -325,7 +345,6 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         />
       </div>
 
-      {/* Imagem */}
       <div className="space-y-2">
         <Label>Imagem (URL)</Label>
         <Input
@@ -335,7 +354,6 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         />
       </div>
 
-      {/* Estoque */}
       <div className="flex items-center justify-between border-t pt-4">
         <Label>Disponível em Stock</Label>
         <Switch
@@ -344,7 +362,6 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
         />
       </div>
 
-      {/* Botão */}
       <Button type="submit" className="w-full mt-4">
         {initialData ? "Salvar Alterações" : "Adicionar Produto"}
       </Button>

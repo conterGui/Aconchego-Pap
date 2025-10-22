@@ -18,6 +18,7 @@ import {
   Package,
   ArrowUpRight,
   ArrowDownRight,
+  Euro,
 } from "lucide-react";
 import HeaderAdmin from "@/components/HeaderAdmin";
 
@@ -73,7 +74,7 @@ const AdminHome = () => {
                   Receita Total
                 </CardTitle>
                 <div className="p-2 bg-primary-foreground/20 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-primary-foreground" />
+                  <Euro className="w-5 h-5 text-primary-foreground" />
                 </div>
               </div>
             </CardHeader>

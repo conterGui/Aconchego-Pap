@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 const FinalizarCompra = () => {
-  const { items, totalPrice, clearCart } = useCart(); // clearCart para limpar após pedido
+  const { items, totalPrice: totalAmount, clearCart } = useCart(); // clearCart para limpar após pedido
 
   const [customerInfo, setCustomerInfo] = useState({
-    nome: "",
-    email: "",
-    morada: "",
-    cidade: "",
+    customerName: "",
+    customerEmail: "",
+    customerAddress: "",
+    customerCity: "",
   });
 
   const [paymentMethod, setPaymentMethod] = useState<"cartao" | "multibanco">(
@@ -43,16 +43,16 @@ const FinalizarCompra = () => {
     }
 
     if (
-      !customerInfo.nome ||
-      !customerInfo.email ||
-      !customerInfo.morada ||
-      !customerInfo.cidade
+      !customerInfo.customerName ||
+      !customerInfo.customerEmail ||
+      !customerInfo.customerAddress ||
+      !customerInfo.customerCity
     ) {
       toast.error("Por favor, preencha todos os campos de envio e contato.");
       return;
     }
 
-    if (!validateEmail(customerInfo.email)) {
+    if (!validateEmail(customerInfo.customerEmail)) {
       toast.error("Insira um email válido.");
       return;
     }
@@ -65,15 +65,21 @@ const FinalizarCompra = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/send-email", {
+      const response = await fetch("http://localhost:3000/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nome: customerInfo.nome,
-          email: customerInfo.email,
-          items,
-          totalPrice,
-          shippingInfo: customerInfo,
+          customerName: customerInfo.customerName,
+          customerEmail: customerInfo.customerEmail,
+          customerAddress: customerInfo.customerAddress,
+          customerCity: customerInfo.customerCity,
+          totalAmount: totalAmount,
+          items: items.map((item) => ({
+            productId: item.id,
+            productName: item.name,
+            quantity: item.quantity,
+            price: item.price,
+          })),
         }),
       });
 
@@ -83,7 +89,12 @@ const FinalizarCompra = () => {
 
       // Limpa carrinho e formulário
       clearCart();
-      setCustomerInfo({ nome: "", email: "", morada: "", cidade: "" });
+      setCustomerInfo({
+        customerName: "",
+        customerEmail: "",
+        customerAddress: "",
+        customerCity: "",
+      });
       setCardInfo({ numero: "", validade: "", cvc: "" });
     } catch (err) {
       toast.error("Erro ao concluir pedido. Tente novamente.");
@@ -108,34 +119,34 @@ const FinalizarCompra = () => {
               </h2>
               <input
                 type="text"
-                name="nome"
+                name="customerName"
                 placeholder="Nome completo"
                 className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
-                value={customerInfo.nome}
+                value={customerInfo.customerName}
                 onChange={handleChangeCustomer}
               />
               <input
                 type="email"
-                name="email"
+                name="customerEmail"
                 placeholder="Email"
                 className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
-                value={customerInfo.email}
+                value={customerInfo.customerEmail}
                 onChange={handleChangeCustomer}
               />
               <input
                 type="text"
-                name="morada"
+                name="customerAddress"
                 placeholder="Morada"
                 className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
-                value={customerInfo.morada}
+                value={customerInfo.customerAddress}
                 onChange={handleChangeCustomer}
               />
               <input
                 type="text"
-                name="cidade"
+                name="customerCity"
                 placeholder="Cidade"
                 className="w-full p-3 rounded-lg border border-border bg-input text-foreground"
-                value={customerInfo.cidade}
+                value={customerInfo.customerCity}
                 onChange={handleChangeCustomer}
               />
             </section>
@@ -241,7 +252,7 @@ const FinalizarCompra = () => {
 
                   <div className="flex justify-between font-bold text-accent border-t border-border pt-4">
                     <span>Total</span>
-                    <span>€ {totalPrice.toFixed(2)}</span>
+                    <span>€ {totalAmount.toFixed(2)}</span>
                   </div>
                 </div>
               )}

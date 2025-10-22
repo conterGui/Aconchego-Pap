@@ -1,5 +1,5 @@
 export type Product = {
-  id: number;
+  id: string;
   name: string;
   price: number;
   weight: string;
@@ -13,19 +13,19 @@ export type Product = {
 
 export const products: Product[] = [
   {
-    id: 1,
+    id: "68f6416d04a22178995df67c",
     image: "/products/JazzEspecial.png",
-    name: "Blend Jazz Especial",
-    price: 12.5,
+    name: "Produtex",
+    price: 35.5,
     weight: "250g",
     roast: "medio",
     type: "grao",
     origin: "Brasil/Colômbia",
     description: "Blend exclusivo da casa com notas de chocolate e caramelo",
-    inStock: false,
+    inStock: true,
   },
   {
-    id: 2,
+    id: "2",
     image: "/products/ExpressoForte.png",
     name: "Espresso Forte",
     price: 18.0,
@@ -37,7 +37,7 @@ export const products: Product[] = [
     inStock: true,
   },
   {
-    id: 3,
+    id: "3",
     image: "/products/BourbonSantos.png",
     name: "Bourbon Santos",
     price: 11.5,
@@ -49,7 +49,7 @@ export const products: Product[] = [
     inStock: true,
   },
   {
-    id: 4,
+    id: "4",
     image: "/products/ColombianPremium.png",
     name: "Colombian Premium",
     price: 17.0,
@@ -61,7 +61,7 @@ export const products: Product[] = [
     inStock: true,
   },
   {
-    id: 5,
+    id: "5",
     image: "/products/Ethiopian.png",
     name: "Ethiopian Yirgacheffe",
     price: 13.5,
@@ -73,7 +73,7 @@ export const products: Product[] = [
     inStock: true,
   },
   {
-    id: 6,
+    id: "6",
     image: "/products/FrenchRoast.png",
     name: "French Roast",
     price: 22.0,

@@ -14,6 +14,7 @@
 ```bash
 cd backend
 node server.js
+npx ts-node server.ts
 ```
 
 1. Rode o Frontend:
