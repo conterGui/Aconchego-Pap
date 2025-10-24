@@ -6,6 +6,7 @@
 - TailwindCSS
 - React Router DOM
 - Lucide-React
+- Shadcn UI
 
 ## Como Iniciar
 
