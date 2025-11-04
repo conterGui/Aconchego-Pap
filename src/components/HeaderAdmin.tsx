@@ -19,7 +19,7 @@ const HeaderAdmin = () => {
     { name: "Eventos", path: "/admin/eventos" },
     { name: "Reservas", path: "/admin/reservas" },
     { name: "Pedidos", path: "/admin/pedidos" },
-    { name: "User page", path: "/home" },
+    { name: "User page", path: "/" },
   ];
 
   const isActive = (path: string) => location.pathname === path;

@@ -18,7 +18,7 @@ const Cart = () => {
         <ul className="space-y-4 max-h-96 overflow-y-auto">
           {items.map((item) => (
             <li
-              key={item.id}
+              key={item._id}
               className="flex flex-col gap-2 border-b border-border pb-2"
             >
               <div className="flex justify-between items-start">
@@ -32,7 +32,7 @@ const Cart = () => {
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={() => removeItem(item.id)}
+                  onClick={() => removeItem(item._id)}
                   className="h-6 w-6 p-0 flex items-center justify-center"
                 >
                   ×
@@ -44,7 +44,7 @@ const Cart = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                  onClick={() => updateQuantity(item._id, item.quantity - 1)}
                   className="h-6 w-6 p-0 flex items-center justify-center"
                 >
                   <Minus className="h-3 w-3" />
@@ -55,7 +55,7 @@ const Cart = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  onClick={() => updateQuantity(item._id, item.quantity + 1)}
                   className="h-6 w-6 p-0 flex items-center justify-center"
                 >
                   <Plus className="h-3 w-3" />

@@ -37,6 +37,14 @@ const FinalizarCompra = () => {
   };
 
   const handleConfirmOrder = async () => {
+    console.log("📦 Enviando pedido:", {
+      items: items.map((item) => ({
+        _id: item._id,
+        productId: item._id,
+        name: item.name,
+      })),
+    });
+
     if (items.length === 0) {
       toast.error("Adicione produtos antes de finalizar a compra.");
       return;
@@ -75,7 +83,7 @@ const FinalizarCompra = () => {
           customerCity: customerInfo.customerCity,
           totalAmount: totalAmount,
           items: items.map((item) => ({
-            productId: item.id,
+            productId: item._id,
             productName: item.name,
             quantity: item.quantity,
             price: item.price,
@@ -240,7 +248,7 @@ const FinalizarCompra = () => {
                 <div className="space-y-4">
                   {items.map((item: CartItem) => (
                     <div
-                      key={item.id}
+                      key={item._id}
                       className="flex justify-between text-foreground"
                     >
                       <span>

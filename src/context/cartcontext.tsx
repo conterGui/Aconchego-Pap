@@ -7,7 +7,7 @@ import {
 } from "react";
 
 export type CartItem = {
-  id: number;
+  _id: number;
   name: string;
   price: number;
   quantity: number;
@@ -59,10 +59,12 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   const addItem = (item: CartItem) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
+      const existing = prev.find((i) => i._id === item._id);
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
+          i._id === item._id
+            ? { ...i, quantity: i.quantity + item.quantity }
+            : i
         );
       }
       return [...prev, item];
@@ -70,11 +72,13 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   };
 
   const removeItem = (id: number) =>
-    setItems((prev) => prev.filter((i) => i.id !== id));
+    setItems((prev) => prev.filter((i) => i._id !== id));
 
   const updateQuantity = (id: number, quantity: number) => {
     if (quantity < 1) return;
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, quantity } : i)));
+    setItems((prev) =>
+      prev.map((i) => (i._id === id ? { ...i, quantity } : i))
+    );
   };
 
   const clearCart = () => setItems([]);

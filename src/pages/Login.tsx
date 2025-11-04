@@ -30,7 +30,6 @@ export default function LoginPage({
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Regex simples para validar email
   const validateEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -44,19 +43,17 @@ export default function LoginPage({
       return;
     }
 
-    setError("");
-
     // 👇 valida admin fixo
     if (
       email === "aconhegocafe0@gmail.com" &&
       password === "aconchegocafe123"
     ) {
+      localStorage.setItem("isAdminLogged", "true"); // salva login no localStorage
       window.location.href = "/admin";
       return;
     }
 
-    // caso contrário, vai para a rota padrão
-    window.location.href = redirectUrl;
+    setError("Email ou senha incorretos.");
   };
 
   return (

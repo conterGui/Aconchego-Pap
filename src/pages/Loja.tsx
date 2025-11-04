@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -13,9 +13,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Coffee, Filter, Package, ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/cartcontext";
-import { products, Product } from "./data/lojaData";
 
 const Loja = () => {
+  const [products, setProducts] = useState<any[]>([]);
   const [selectedRoast, setSelectedRoast] = useState<string>("all");
   const [selectedWeight, setSelectedWeight] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
@@ -29,6 +29,20 @@ const Loja = () => {
     const typeMatch = selectedType === "all" || product.type === selectedType;
     return roastMatch && weightMatch && typeMatch;
   });
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/products");
+      const data = await res.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
+  };
 
   const getRoastBadgeColor = (roast: string) => {
     switch (roast) {
@@ -132,7 +146,7 @@ const Loja = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProducts.map((product) => (
                 <Card
-                  key={product.id}
+                  key={product._id}
                   className={`group hover:shadow-elegant transition-all duration-300 ${
                     !product.available ? "opacity-75" : ""
                   }`}
@@ -197,16 +211,18 @@ const Loja = () => {
                             : "bg-muted text-muted-foreground cursor-not-allowed"
                         }`}
                         disabled={!product.available}
-                        onClick={() =>
-                          product.available &&
-                          addItem({
-                            id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            quantity: 1,
-                            image: undefined,
-                          })
-                        }
+                        onClick={() => {
+                          console.log("🧾 Produto adicionado:", product);
+                          if (product.available) {
+                            addItem({
+                              _id: product._id,
+                              name: product.name,
+                              price: product.price,
+                              quantity: 1,
+                              image: product.image,
+                            });
+                          }
+                        }}
                       >
                         {product.available ? (
                           <>
