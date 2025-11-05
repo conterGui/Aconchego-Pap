@@ -45,7 +45,7 @@ export default function LoginPage({
 
     // 👇 valida admin fixo
     if (
-      email === "aconhegocafe0@gmail.com" &&
+      email === "aconchegocafe0@gmail.com" &&
       password === "aconchegocafe123"
     ) {
       localStorage.setItem("isAdminLogged", "true"); // salva login no localStorage

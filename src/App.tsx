@@ -50,6 +50,7 @@ const App = () => (
             <Route path="/contato" element={<Contato />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/pedidos/:id" element={<PedidoDetalhePage />} />
+            <Route path="/login" element={<Login />} />
 
             {/* Rotas protegidas do admin */}
             <Route
