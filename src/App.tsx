@@ -62,7 +62,7 @@ const App = () => (
               }
             />
             <Route
-              path="/admin/estoque"
+              path="/admin/stock"
               element={
                 <ProtectedRoute>
                   <StockAdmin />

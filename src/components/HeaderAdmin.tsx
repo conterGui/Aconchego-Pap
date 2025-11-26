@@ -14,7 +14,7 @@ const HeaderAdmin = () => {
 
   const menuItems = [
     { name: "Home", path: "/admin" },
-    { name: "Estoque", path: "/admin/estoque" },
+    { name: "Stock", path: "/admin/stock" },
     { name: "Menu", path: "/admin/menu" },
     { name: "Eventos", path: "/admin/eventos" },
     { name: "Reservas", path: "/admin/reservas" },

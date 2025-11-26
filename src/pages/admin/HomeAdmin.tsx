@@ -129,10 +129,10 @@ const AdminHome = () => {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-foreground">
-              Painel de Controle
+              Painel de Controlo
             </h1>
             <p className="text-muted-foreground text-lg">
-              Visão geral das vendas de cafés
+              Visão geral das vendas e facturamento
             </p>
           </div>
           <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-card rounded-lg shadow-sm border border-border">
