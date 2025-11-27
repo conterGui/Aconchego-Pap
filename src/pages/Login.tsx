@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Coffee } from "lucide-react";
 
 type LoginPageProps = {
   title?: string;
@@ -21,7 +22,7 @@ type LoginPageProps = {
 
 export default function LoginPage({
   title = "Bem-vindo",
-  subtitle = "Faça login para continuar",
+  subtitle = "Ambiente de administração ",
   buttonLabel = "Entrar",
   redirectUrl = "/home",
   className,
@@ -59,14 +60,22 @@ export default function LoginPage({
   return (
     <div
       className={cn(
-        "flex h-screen w-full items-center justify-center bg-gray-50",
+        "flex h-screen w-full items-center justify-center bg-background-color",
         className
       )}
     >
       <Card className="w-full max-w-md shadow-xl">
-        <CardHeader>
+        <CardHeader className="text-center flex flex-col items-center space-y-3">
+          <div className="flex items-center space-x-2 ">
+            <Coffee className="h-7 w-7" />
+            <span className="font-playfair font-bold text-2xl ">Aconchego</span>
+          </div>
           <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-          <CardDescription>{subtitle}</CardDescription>
+          {subtitle && (
+            <CardDescription className="text-sm opacity-80">
+              {subtitle}
+            </CardDescription>
+          )}
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
