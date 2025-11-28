@@ -41,6 +41,9 @@ export default function StorkAdmin() {
     fetchProducts();
   }, []);
 
+  {
+    /*Função GET*/
+  }
   const fetchProducts = async () => {
     try {
       const res = await fetch("http://localhost:3000/api/products");
@@ -51,6 +54,9 @@ export default function StorkAdmin() {
     }
   };
 
+  {
+    /*Função para salvar alterações (editar e criar) */
+  }
   const handleSave = async (product: any) => {
     try {
       if (editingProduct) {
@@ -76,6 +82,9 @@ export default function StorkAdmin() {
     }
   };
 
+  {
+    /*Função para deletar*/
+  }
   const handleDelete = async (_id: string) => {
     try {
       await fetch(`http://localhost:3000/api/products/${_id}`, {
@@ -235,7 +244,7 @@ export default function StorkAdmin() {
 }
 
 // ----------------------
-// FORM COMPONENT INLINE
+// Formulário do produto
 // ----------------------
 interface ProductFormProps {
   initialData?: any;

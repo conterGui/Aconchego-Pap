@@ -36,6 +36,9 @@ const FinalizarCompra = () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
+  {
+    /*Função confirmação*/
+  }
   const handleConfirmOrder = async () => {
     console.log("📦 Enviando pedido:", {
       items: items.map((item) => ({
@@ -72,6 +75,9 @@ const FinalizarCompra = () => {
       }
     }
 
+    {
+      /*Função de criaçãod e pedido*/
+    }
     try {
       const response = await fetch("http://localhost:3000/api/orders", {
         method: "POST",

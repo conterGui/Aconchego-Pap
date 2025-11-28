@@ -129,13 +129,13 @@ export default function ReservasAdmin() {
 
     setReservations((prev) => [...prev, newReservation]);
 
-    // reset inputs (keep day for convenience)
+    // reseta inputs (mantem o dia conveniente)
     setClientName("");
     setPeople(2);
     setCreateTime("08:00");
     setSelectedTable(chosenTable.id);
 
-    // jump visualizador to the created slot
+    // muda o visualizador para o slot criado
     setViewDay(createDay);
     setViewTime(createTime);
   };

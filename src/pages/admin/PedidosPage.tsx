@@ -33,6 +33,9 @@ const PedidoDetalhePage = () => {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
+  {
+    /*Função GET*/
+  }
   useEffect(() => {
     const fetchOrder = async () => {
       try {
@@ -49,6 +52,9 @@ const PedidoDetalhePage = () => {
     fetchOrder();
   }, [id]);
 
+  {
+    /*Ajusta a data para ficar legivel*/
+  }
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleString("pt-PT", {
       day: "2-digit",

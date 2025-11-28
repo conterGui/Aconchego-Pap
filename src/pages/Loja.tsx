@@ -34,6 +34,9 @@ const Loja = () => {
     fetchProducts();
   }, []);
 
+  {
+    /*Função GET*/
+  }
   const fetchProducts = async () => {
     try {
       const res = await fetch("http://localhost:3000/api/products");

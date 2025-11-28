@@ -27,6 +27,9 @@ const PedidosPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  {
+    /*Função GET*/
+  }
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -43,6 +46,9 @@ const PedidosPage = () => {
     fetchOrders();
   }, []);
 
+  {
+    /*Ajusta a data para ficar legivel*/
+  }
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString("pt-PT", {
