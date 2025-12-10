@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MenuItem, menuItems } from "@/pages/data/menuData";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import {
@@ -16,15 +16,45 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import HeaderAdmin from "@/components/HeaderAdmin";
 
+type MenuFormData = {
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  image?: string;
+  isSpecial?: boolean;
+  allergens?: string[];
+  available: boolean;
+};
+
 export default function MenuAdmin() {
-  const [items, setItems] = useState<MenuItem[]>(menuItems);
+  const BASE_URL = "http://localhost:3000/api/menu";
+  const [items, setItems] = useState<MenuItem[]>([]);
   const [search, setSearch] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
 
+  type MenuItem = {
+    _id: string;
+    name: string;
+    description: string;
+    image?: string;
+    price: number;
+    category: string;
+    isSpecial?: boolean;
+    allergens?: string[];
+    available: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  type GroupedMenuResponse = {
+    [category: string]: MenuItem[];
+  };
+
   // Estados do formulário
-  const [formData, setFormData] = useState<Omit<MenuItem, "id">>({
+  const [formData, setFormData] = useState<MenuFormData>({
     name: "",
     price: 0,
     description: "",
@@ -32,49 +62,95 @@ export default function MenuAdmin() {
     image: "",
     isSpecial: false,
     allergens: [],
+    available: true,
   });
 
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAdd = () => {
-    const newItem: MenuItem = {
-      id: Date.now(),
-      ...formData,
-    };
-    setItems((prev) => [...prev, newItem]);
-    setFormData({
-      name: "",
-      price: 0,
-      description: "",
-      category: "",
-      image: "",
-      isSpecial: false,
-      allergens: [],
-    });
-    setIsAddOpen(false);
+  useEffect(() => {
+    async function loadItems() {
+      try {
+        const res = await fetch("http://localhost:3000/api/menu");
+        const data: GroupedMenuResponse = await res.json();
+
+        // Converte o objeto agrupado em array simples
+        const array: MenuItem[] = Object.values(data).flat();
+        setItems(array);
+      } catch (err) {
+        console.error("Erro ao carregar itens:", err);
+      }
+    }
+
+    loadItems();
+  }, []);
+
+  const handleAdd = async () => {
+    try {
+      const res = await fetch(BASE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const newItem: MenuItem = await res.json();
+      setItems((prev) => [...prev, newItem]);
+      setFormData({
+        name: "",
+        price: 0,
+        description: "",
+        category: "",
+        image: "",
+        isSpecial: false,
+        allergens: [],
+        available: true,
+      });
+      setIsAddOpen(false);
+    } catch (err) {
+      console.error("Erro ao adicionar item:", err);
+    }
   };
 
-  const handleDelete = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  const handleDelete = async (id: string) => {
+    await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+    setItems((prev) => prev.filter((item) => item._id !== id));
   };
 
   const handleEdit = (item: MenuItem) => {
     setEditingItem(item);
-    setFormData({ ...item });
+    setFormData({
+      name: item.name,
+      price: item.price,
+      description: item.description,
+      category: item.category,
+      image: item.image || "",
+      isSpecial: item.isSpecial || false,
+      allergens: item.allergens || [],
+      available: item.available,
+    });
     setIsEditOpen(true);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!editingItem) return;
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === editingItem.id ? { ...editingItem, ...formData } : item
-      )
-    );
-    setEditingItem(null);
-    setIsEditOpen(false);
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/menu/${editingItem._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
+      const updatedItem: MenuItem = await res.json();
+      setItems((prev) =>
+        prev.map((item) => (item._id === updatedItem._id ? updatedItem : item))
+      );
+      setEditingItem(null);
+      setIsEditOpen(false);
+    } catch (err) {
+      console.error("Erro ao editar item:", err);
+    }
   };
 
   return (
@@ -126,7 +202,7 @@ export default function MenuAdmin() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredItems.map((item) => (
             <Card
-              key={item.id}
+              key={item._id}
               className="overflow-hidden hover:shadow-md transition-all duration-200"
             >
               {item.image && (
@@ -177,7 +253,7 @@ export default function MenuAdmin() {
                   <Button
                     variant="destructive"
                     size="icon"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => handleDelete(item._id)}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -212,8 +288,8 @@ export default function MenuAdmin() {
 
 /* 🧩 Componente de Formulário Reutilizável */
 interface StockFormProps {
-  formData: Omit<MenuItem, "id">;
-  setFormData: React.Dispatch<React.SetStateAction<Omit<MenuItem, "id">>>;
+  formData: MenuFormData;
+  setFormData: React.Dispatch<React.SetStateAction<MenuFormData>>;
   onSubmit: () => void;
   onCancel: () => void;
 }
@@ -226,9 +302,9 @@ function StockForm({
 }: StockFormProps) {
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        onSubmit();
+        await onSubmit();
       }}
       className="space-y-6 max-h-[80vh] overflow-y-auto p-1"
     >

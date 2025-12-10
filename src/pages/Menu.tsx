@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,9 +6,21 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Coffee, Utensils, Cookie, Star } from "lucide-react";
-import { menuItems, MenuItem } from "./data/menuData";
 
 const Menu = () => {
+  type MenuItem = {
+    _id: string;
+    name: string;
+    description: string;
+    image?: string;
+    price: number;
+    category: string;
+    isSpecial?: boolean;
+    allergens?: string[];
+    available: boolean;
+  };
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
   const [selectedCategory, setSelectedCategory] = useState("cafes");
 
   const filteredItems = menuItems.filter(
@@ -29,6 +41,24 @@ const Menu = () => {
         return <Utensils className="h-5 w-5" />;
     }
   };
+
+  useEffect(() => {
+    async function fetchMenu() {
+      try {
+        const res = await fetch("http://localhost:3000/api/menu");
+        const data = await res.json();
+
+        // Agrupado por categoria -> transforma em array
+        const array = Object.values(data).flat() as MenuItem[];
+        setMenuItems(array);
+      } catch (err) {
+        console.error("Erro ao carregar menu:", err);
+        setMenuItems([]);
+      }
+    }
+
+    fetchMenu();
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -92,7 +122,7 @@ const Menu = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredItems.map((item) => (
                     <Card
-                      key={item.id}
+                      key={item._id}
                       className="group hover:shadow-elegant transition-all duration-300"
                     >
                       <CardHeader>

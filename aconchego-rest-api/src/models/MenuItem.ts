@@ -6,6 +6,8 @@ export interface IMenuItem extends Document {
   category: string;
   price: number;
   image?: string;
+  isSpecial: boolean;
+  allergens?: string[];
   available: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -18,6 +20,8 @@ const MenuItemSchema = new Schema<IMenuItem>(
     category: { type: String, required: true },
     price: { type: Number, required: true },
     image: { type: String },
+    isSpecial: { type: Boolean, default: false },
+    allergens: { type: [String] },
     available: { type: Boolean, default: true }
   },
   { timestamps: true }
