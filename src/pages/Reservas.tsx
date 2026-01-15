@@ -13,16 +13,47 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Calendar, Clock, Users, Phone, Mail, User } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Users,
+  Phone,
+  Mail,
+  User,
+  Ticket,
+} from "lucide-react";
+import { useLocation, Navigate } from "react-router-dom";
+import { events } from "./data/eventsData";
 
 const Reservas = () => {
   const { toast } = useToast();
+  const location = useLocation();
+
+  const eventData = location.state as {
+    eventId?: number;
+    title?: string;
+    date?: string;
+    time?: string;
+    venue?: string;
+    price?: number;
+  } | null;
+
+  const normalizeDate = (date?: string) => {
+    if (!date) return "";
+    if (date.includes("/")) {
+      const [day, month, year] = date.split("/");
+      return `${year}-${month}-${day}`;
+    }
+    return date;
+  };
+
   const [formData, setFormData] = useState({
+    eventId: eventData?.eventId?.toString() || "",
     name: "",
     email: "",
     phone: "",
-    date: "",
-    time: "",
+    date: normalizeDate(eventData?.date),
+    time: eventData?.time || "",
     guests: "",
   });
 
@@ -56,6 +87,7 @@ const Reservas = () => {
 
     // Reset form
     setFormData({
+      eventId: "",
       name: "",
       email: "",
       phone: "",
@@ -190,6 +222,45 @@ const Reservas = () => {
                         onChange={(e) => handleChange("phone", e.target.value)}
                         className="w-full"
                       />
+                    </div>
+
+                    {/* Evento (opcional) */}
+                    <div className="space-y-2">
+                      <Label className="flex items-center space-x-2">
+                        <Ticket className="h-4 w-4 text-accent" />
+                        <span>Evento (opcional)</span>
+                      </Label>
+
+                      <Select
+                        value={formData.eventId}
+                        onValueChange={(value) => {
+                          const selectedEvent = events.find(
+                            (e) => e.id.toString() === value
+                          );
+
+                          setFormData((prev) => ({
+                            ...prev,
+                            eventId: value,
+                            date: normalizeDate(selectedEvent?.date),
+                            time: selectedEvent?.time || "",
+                          }));
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sem evento" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          {events.map((event) => (
+                            <SelectItem
+                              key={event.id}
+                              value={event.id.toString()}
+                            >
+                              {event.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     {/* Data e Hora */}

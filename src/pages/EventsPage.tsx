@@ -192,16 +192,23 @@ const EventPage = () => {
                     </div>
 
                     <div className="space-y-3">
-                      <Link to="/reservas" className="block">
+                      <Link
+                        to="/reservas"
+                        state={{
+                          eventId: event.id,
+                          title: event.title,
+                          date: event.date,
+                          time: event.time,
+                          venue: event.venue,
+                          price: event.price,
+                        }}
+                        className="block"
+                      >
                         <button className="w-full px-6 py-4 rounded-lg bg-gradient-gold text-primary shadow-gold font-medium text-lg hover:shadow-elegant transition-all duration-200 hover:scale-105">
                           <Ticket className="w-5 h-5 mr-2 inline" />
                           Reservar Agora
                         </button>
                       </Link>
-
-                      <button className="w-full px-6 py-4 rounded-lg border border-accent/20 text-accent hover:bg-accent/5 font-medium transition-all duration-200">
-                        Adicionar ao Calendário
-                      </button>
                     </div>
 
                     <div className="pt-4 border-t">

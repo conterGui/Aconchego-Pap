@@ -17,7 +17,7 @@ export const events: Event[] = [
     id: 1,
     image: "/events/jazzClassico.jpg",
     title: "Noite do Jazz Clássico",
-    date: "2024-01-15",
+    date: "2026-03-15",
     time: "20:00",
     description:
       "Uma noite especial com os clássicos do jazz americano. Trio formado por piano, contrabaixo e bateria apresenta sucessos de Miles Davis, John Coltrane e Bill Evans.",
@@ -31,7 +31,7 @@ export const events: Event[] = [
     id: 2,
     image: "/events/arteLatte.jpg",
     title: "Workshop: Arte do Latte",
-    date: "2024-01-18",
+    date: "2026-03-18",
     time: "15:00",
     description:
       "Aprenda técnicas profissionais de latte art com nosso barista especializado. Inclui certificado e degustação de cafés especiais.",
@@ -44,7 +44,7 @@ export const events: Event[] = [
     id: 3,
     image: "/events/cafesMundo.png",
     title: "Degustação de Cafés do Mundo",
-    date: "2024-01-22",
+    date: "2026-03-22",
     time: "16:30",
     description:
       "Viagem pelos sabores dos melhores cafés do mundo. Degustação comentada de 8 origens diferentes com harmonização de doces.",
@@ -57,7 +57,7 @@ export const events: Event[] = [
     id: 4,
     image: "/events/jazzPoetry.jpg",
     title: "Jazz & Poetry Night",
-    date: "2024-01-25",
+    date: "2026-03-25",
     time: "19:30",
     description:
       "Encontro entre música e literatura. Poetas locais declamam enquanto o quarteto de jazz improvisa acompanhamentos únicos.",
@@ -70,7 +70,7 @@ export const events: Event[] = [
     id: 5,
     image: "/events/bossaNova.jpg",
     title: "Manhã de Bossa Nova",
-    date: "2024-01-28",
+    date: "2026-03-28",
     time: "10:00",
     description:
       "Brunch especial com o melhor da bossa nova brasileira. Inclui café da manhã completo e apresentação ao vivo.",
@@ -83,7 +83,7 @@ export const events: Event[] = [
     id: 6,
     image: "/events/torraCafe.jpg",
     title: "Masterclass: Torra Artesanal",
-    date: "2024-02-01",
+    date: "2026-02-03",
     time: "14:00",
     description:
       "Processo completo da torra artesanal de café. Dos grãos verdes até a xícara perfeita. Leve sua própria mistura para casa.",
@@ -97,7 +97,7 @@ export const events: Event[] = [
     id: 7,
     image: "/events/instrumentos.jpg",
     title: "Noite dos Instrumentos",
-    date: "2024-02-05",
+    date: "2026-02-05",
     time: "21:00",
     description:
       "Cada músico apresenta seu instrumento em solos únicos. Piano, saxofone, trompete e guitarra em harmonias improvisadas.",
@@ -110,7 +110,7 @@ export const events: Event[] = [
     id: 8,
     image: "/events/cafeGelado.jpg",
     title: "Festival do Café Gelado",
-    date: "2024-02-08",
+    date: "2026-02-08",
     time: "13:00",
     description:
       "Celebração dos métodos de extração a frio. Cold brew, ice drip, nitro coffee e criações autorais dos nossos baristas.",
