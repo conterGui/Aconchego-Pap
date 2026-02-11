@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Calendar, Clock, Music, MapPin, Ticket } from "lucide-react";
-import { events, Event } from "./data/eventsData";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Eventos = () => {
   const getCategoryColor = (category: string) => {
@@ -23,6 +23,48 @@ const Eventos = () => {
     }
   };
 
+  type EventItem = {
+    _id: string;
+    image?: string;
+    title: string;
+    eventDate: string;
+    eventTime: string;
+    description: string;
+    artist: string;
+    price: number;
+    venue: string;
+    category: "jazz" | "workshop" | "degustacao" | "especial";
+    featured?: boolean;
+    location?: string;
+  };
+
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const res = await fetch("http://localhost:3000/api/events");
+
+        if (!res.ok) {
+          throw new Error("Erro na resposta da API");
+        }
+
+        const data = await res.json();
+        setEvents(data);
+      } catch (err) {
+        console.error("Erro ao carregar eventos:", err);
+        setError("Não foi possível carregar os eventos.");
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchEvents();
+  }, []);
+
   const getCategoryName = (category: string) => {
     switch (category) {
       case "jazz":
@@ -39,7 +81,7 @@ const Eventos = () => {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString + "T00:00:00");
+    const date = new Date(dateString);
     return date.toLocaleDateString("pt-BR", {
       weekday: "long",
       year: "numeric",
@@ -47,6 +89,24 @@ const Eventos = () => {
       day: "numeric",
     });
   };
+
+  if (loading) {
+    return (
+      <div className="text-center mt-20">
+        <p>Carregando eventos...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center mt-20 text-red-500">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  console.log(events[0]);
 
   return (
     <div className="min-h-screen">
@@ -78,7 +138,7 @@ const Eventos = () => {
                 .filter((event) => event.featured)
                 .map((event) => (
                   <Card
-                    key={event.id}
+                    key={event._id}
                     className="group hover:shadow-elegant transition-all duration-300 border-accent/20"
                   >
                     <CardHeader>
@@ -98,11 +158,11 @@ const Eventos = () => {
                       <div className="space-y-3 mb-4">
                         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                           <Calendar className="h-4 w-4 text-accent" />
-                          <span>{formatDate(event.date)}</span>
+                          <span>{formatDate(event.eventDate)}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                           <Clock className="h-4 w-4 text-accent" />
-                          <span>{event.time}</span>
+                          <span>{event.eventTime}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                           <Music className="h-4 w-4 text-accent" />
@@ -129,7 +189,7 @@ const Eventos = () => {
                           asChild
                           className="bg-gradient-gold text-primary shadow-gold"
                         >
-                          <Link to={`/eventos/${event.id}`}>Ver Detalhes</Link>
+                          <Link to={`/eventos/${event._id}`}>Ver Detalhes</Link>
                         </Button>
                       </div>
                     </CardContent>
@@ -148,7 +208,7 @@ const Eventos = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {events.map((event) => (
                 <Card
-                  key={event.id}
+                  key={event._id}
                   className="group hover:shadow-elegant transition-all duration-300"
                 >
                   <CardHeader>
@@ -170,11 +230,11 @@ const Eventos = () => {
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4 text-accent" />
-                        <span>{formatDate(event.date)}</span>
+                        <span>{formatDate(event.eventDate)}</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4 text-accent" />
-                        <span>{event.time}</span>
+                        <span>{event.eventTime}</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Music className="h-4 w-4 text-accent" />
@@ -195,7 +255,7 @@ const Eventos = () => {
                         asChild
                         className="bg-gradient-gold text-primary"
                       >
-                        <Link to={`/eventos/${event.id}`}>Ver Detalhes</Link>
+                        <Link to={`/eventos/${event._id}`}>Ver Detalhes</Link>
                       </Button>
                     </div>
                   </CardContent>

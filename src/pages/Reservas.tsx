@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,20 +22,52 @@ import {
   User,
   Ticket,
 } from "lucide-react";
-import { useLocation, Navigate } from "react-router-dom";
-import { events } from "./data/eventsData";
+import { useLocation } from "react-router-dom";
 
 const Reservas = () => {
   const { toast } = useToast();
   const location = useLocation();
 
+  type EventItem = {
+    _id: string;
+    title: string;
+    description: string;
+    eventDate: string;
+    eventTime: string;
+    location?: string;
+  };
+
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const res = await fetch("http://localhost:3000/api/events");
+
+        if (!res.ok) {
+          throw new Error("Erro ao buscar eventos");
+        }
+
+        const data = await res.json();
+        setEvents(data);
+      } catch (error) {
+        console.error("Erro ao carregar eventos:", error);
+        setEvents([]);
+      } finally {
+        setLoadingEvents(false);
+      }
+    }
+
+    fetchEvents();
+  }, []);
+
   const eventData = location.state as {
-    eventId?: number;
+    eventId?: string;
     title?: string;
-    date?: string;
-    time?: string;
-    venue?: string;
-    price?: number;
+    eventDate?: string;
+    eventTime?: string;
+    location?: string;
   } | null;
 
   const normalizeDate = (date?: string) => {
@@ -48,12 +80,12 @@ const Reservas = () => {
   };
 
   const [formData, setFormData] = useState({
-    eventId: eventData?.eventId?.toString() || "",
+    eventId: eventData?.eventId || "",
     name: "",
     email: "",
     phone: "",
-    date: normalizeDate(eventData?.date),
-    time: eventData?.time || "",
+    date: normalizeDate(eventData?.eventDate),
+    time: eventData?.eventTime || "",
     guests: "",
   });
 
@@ -235,27 +267,30 @@ const Reservas = () => {
                         value={formData.eventId}
                         onValueChange={(value) => {
                           const selectedEvent = events.find(
-                            (e) => e.id.toString() === value
+                            (e) => e._id === value,
                           );
 
                           setFormData((prev) => ({
                             ...prev,
                             eventId: value,
-                            date: normalizeDate(selectedEvent?.date),
-                            time: selectedEvent?.time || "",
+                            date: normalizeDate(selectedEvent?.eventDate),
+                            time: selectedEvent?.eventTime || "",
                           }));
                         }}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Sem evento" />
+                          <SelectValue
+                            placeholder={
+                              loadingEvents
+                                ? "Carregando eventos..."
+                                : "Sem evento"
+                            }
+                          />
                         </SelectTrigger>
 
                         <SelectContent>
                           {events.map((event) => (
-                            <SelectItem
-                              key={event.id}
-                              value={event.id.toString()}
-                            >
+                            <SelectItem key={event._id} value={event._id}>
                               {event.title}
                             </SelectItem>
                           ))}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,23 +14,82 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
-import { events } from "./data/eventsData";
 
 const EventPage = () => {
   const { id } = useParams<{ id: string }>();
-  const event = events.find((e) => e.id === Number(id));
+
+  type EventItem = {
+    _id: string;
+    title: string;
+    description: string;
+    eventDate: string;
+    eventTime: string;
+    image?: string;
+    location?: string;
+    artist?: string;
+    price?: number;
+    category?: "jazz" | "workshop" | "degustacao" | "especial";
+    featured?: boolean;
+    venue?: string;
+  };
+
+  const [event, setEvent] = useState<EventItem | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    console.log("useParams id:", id);
+    async function fetchEvent() {
+      try {
+        if (!id) throw new Error("ID inválido");
+
+        const res = await fetch(`http://localhost:3000/api/events/${id}`);
+
+        if (!res.ok) {
+          throw new Error("Evento não encontrado");
+        }
+
+        const data: EventItem = await res.json();
+        setEvent(data);
+      } catch (error) {
+        console.error("Erro ao carregar evento:", error);
+        setEvent(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchEvent();
+  }, [id]);
 
   const handleShare = () => {
     const currentUrl = window.location.href;
     navigator.clipboard
       .writeText(currentUrl)
-      .then(() => {
-        toast.success("Link copiado para a área de transferência!");
-      })
-      .catch(() => {
-        toast.error("Erro ao copiar link");
-      });
+      .then(() => toast.success("Link copiado para a área de transferência!"))
+      .catch(() => toast.error("Erro ao copiar link"));
   };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString + "T00:00:00");
+    return date.toLocaleDateString("pt-BR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow flex items-center justify-center">
+          <p>Carregando evento...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -64,7 +124,7 @@ const EventPage = () => {
 
       <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
         {/* Back Button */}
-        <div className="mb-6  mt-10">
+        <div className="mb-6 mt-10">
           <Link
             to="/eventos"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-accent transition-colors group"
@@ -85,11 +145,12 @@ const EventPage = () => {
                     {event.image && (
                       <img
                         src={event.image}
-                        alt="Event"
+                        alt={event.title}
                         className="absolute inset-0 w-full h-full object-cover"
                       />
                     )}
                   </div>
+
                   {/* Share Button */}
                   <div className="absolute top-4 right-4">
                     <button
@@ -104,13 +165,8 @@ const EventPage = () => {
                 <CardHeader className="space-y-4">
                   <div className="flex flex-wrap gap-2">
                     <Badge className="bg-accent/10 text-accent border-accent/20 hover:bg-accent/20 transition-colors">
-                      {event.category}
+                      Evento Especial
                     </Badge>
-                    {event.featured && (
-                      <Badge className="bg-gradient-gold text-primary shadow-gold">
-                        Destaque
-                      </Badge>
-                    )}
                   </div>
 
                   <CardTitle className="text-2xl md:text-3xl font-playfair leading-tight">
@@ -127,7 +183,9 @@ const EventPage = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Data</p>
-                        <p className="font-medium">{event.date}</p>
+                        <p className="font-medium">
+                          {formatDate(event.eventDate)}
+                        </p>
                       </div>
                     </div>
 
@@ -137,7 +195,7 @@ const EventPage = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Horário</p>
-                        <p className="font-medium">{event.time}</p>
+                        <p className="font-medium">{event.eventTime}</p>
                       </div>
                     </div>
 
@@ -146,8 +204,12 @@ const EventPage = () => {
                         <Music className="h-4 w-4 text-accent" />
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Artista</p>
-                        <p className="font-medium">{event.artist}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Realização
+                        </p>
+                        <p className="font-medium">
+                          {event.artist || "Jazz ao Vivo"}
+                        </p>
                       </div>
                     </div>
 
@@ -157,7 +219,9 @@ const EventPage = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Local</p>
-                        <p className="font-medium">{event.venue}</p>
+                        <p className="font-medium">
+                          {event.location || event.venue || "Local a definir"}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -176,18 +240,15 @@ const EventPage = () => {
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <div className="space-y-6 lg:sticky lg:top-6">
-                {/* Booking Card */}
                 <Card className="shadow-elegant border-0">
                   <CardContent className="p-6 space-y-6">
                     <div className="text-center space-y-2">
-                      <p className="text-sm text-muted-foreground">
-                        Preço do bilhete
-                      </p>
+                      <p className="text-sm text-muted-foreground">Entrada</p>
                       <div className="text-3xl font-bold text-accent">
-                        € {event.price.toFixed(2).replace(".", ",")}
+                        Gratuito
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        por pessoa
+                        reserva recomendada
                       </p>
                     </div>
 
@@ -195,12 +256,11 @@ const EventPage = () => {
                       <Link
                         to="/reservas"
                         state={{
-                          eventId: event.id,
+                          eventId: event._id,
                           title: event.title,
-                          date: event.date,
-                          time: event.time,
-                          venue: event.venue,
-                          price: event.price,
+                          eventDate: event.eventDate,
+                          eventTime: event.eventTime,
+                          location: event.location || event.venue,
                         }}
                         className="block"
                       >
@@ -220,43 +280,11 @@ const EventPage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Event Info */}
                 <Card className="shadow-elegant border-0">
                   <CardContent className="p-6 space-y-4">
                     <h3 className="font-semibold text-lg">
                       Informações Importantes
                     </h3>
-
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">
-                          Capacidade:
-                        </span>
-                        <span className="font-medium">150 pessoas</span>
-                      </div>
-
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">
-                          Idade mínima:
-                        </span>
-                        <span className="font-medium">16 anos</span>
-                      </div>
-
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Duração:</span>
-                        <span className="font-medium">2 horas</span>
-                      </div>
-
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">
-                          Categoria:
-                        </span>
-                        <Badge className="text-xs bg-accent/10 text-accent">
-                          {event.category}
-                        </Badge>
-                      </div>
-                    </div>
-
                     <div className="pt-4 border-t text-xs text-muted-foreground">
                       <p>
                         Política de cancelamento: Reembolso integral até 24h
@@ -266,7 +294,6 @@ const EventPage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Contact Card */}
                 <Card className="shadow-elegant border-0">
                   <CardContent className="p-6 space-y-4">
                     <h3 className="font-semibold">Alguma dúvida?</h3>
@@ -275,11 +302,9 @@ const EventPage = () => {
                         Entre em contacto conosco para mais informações sobre
                         este evento.
                       </p>
-
                       <button className="w-full text-left p-2 rounded text-accent hover:bg-accent/5 transition-colors">
                         (11) 9999-9999
                       </button>
-
                       <button className="w-full text-left p-2 rounded text-accent hover:bg-accent/5 transition-colors">
                         contato@eventos.com
                       </button>

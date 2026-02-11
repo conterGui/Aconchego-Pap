@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Event, events } from "@/pages/data/eventsData";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
@@ -17,14 +16,28 @@ import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import HeaderAdmin from "@/components/HeaderAdmin";
 
+interface Event {
+  _id: string;
+  title: string;
+  date: string;
+  time: string;
+  description: string;
+  artist: string;
+  price: number;
+  venue: string;
+  category: string;
+  image?: string;
+  featured: boolean;
+}
+
 export default function EventsAdmin() {
-  const [items, setItems] = useState<Event[]>(events);
+  const [items, setItems] = useState<Event[]>([]);
   const [search, setSearch] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Event | null>(null);
 
-  const [formData, setFormData] = useState<Omit<Event, "id">>({
+  const [formData, setFormData] = useState<Omit<Event, "_id">>({
     title: "",
     date: "",
     time: "",
@@ -37,38 +50,22 @@ export default function EventsAdmin() {
     featured: false,
   });
 
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const res = await fetch("http://localhost:3000/api/events");
+        const data = await res.json();
+        setItems(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchEvents();
+  }, []);
+
   const filteredItems = items.filter((item) =>
-    item.title.toLowerCase().includes(search.toLowerCase())
+    item.title.toLowerCase().includes(search.toLowerCase()),
   );
-
-  const handleAdd = () => {
-    const newEvent: Event = { id: Date.now(), ...formData };
-    setItems((prev) => [...prev, newEvent]);
-    resetForm();
-    setIsAddOpen(false);
-  };
-
-  const handleEdit = (item: Event) => {
-    setEditingItem(item);
-    setFormData({ ...item });
-    setIsEditOpen(true);
-  };
-
-  const handleSaveEdit = () => {
-    if (!editingItem) return;
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === editingItem.id ? { ...editingItem, ...formData } : item
-      )
-    );
-    setEditingItem(null);
-    resetForm();
-    setIsEditOpen(false);
-  };
-
-  const handleDelete = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
 
   const resetForm = () => {
     setFormData({
@@ -85,10 +82,67 @@ export default function EventsAdmin() {
     });
   };
 
+  const handleAdd = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const newEvent = await res.json();
+      setItems((prev) => [...prev, newEvent]);
+      resetForm();
+      setIsAddOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleEdit = (item: Event) => {
+    setEditingItem(item);
+    setFormData({ ...item });
+    setIsEditOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingItem) return;
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/events/${editingItem._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
+      const updatedEvent = await res.json();
+      setItems((prev) =>
+        prev.map((item) =>
+          item._id === editingItem._id ? updatedEvent : item,
+        ),
+      );
+      setEditingItem(null);
+      resetForm();
+      setIsEditOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await fetch(`http://localhost:3000/api/events/${id}`, {
+        method: "DELETE",
+      });
+      setItems((prev) => prev.filter((item) => item._id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="flex-grow container mx-auto px-4 py-16 pt-16">
       <HeaderAdmin />
-      {/* Header */}
       <div className="flex justify-between items-center mb-6 mt-12">
         <div>
           <h1 className="text-4xl font-bold text-foreground mb-2">
@@ -117,7 +171,6 @@ export default function EventsAdmin() {
         </Dialog>
       </div>
 
-      {/* Pesquisa */}
       <div className="relative mb-4 max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
@@ -128,10 +181,9 @@ export default function EventsAdmin() {
         />
       </div>
 
-      {/* Lista */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredItems.map((event) => (
-          <Card key={event.id} className="overflow-hidden">
+          <Card key={event._id} className="overflow-hidden">
             <CardHeader className="p-0">
               {event.image && (
                 <img
@@ -177,7 +229,7 @@ export default function EventsAdmin() {
                 <Button
                   variant="destructive"
                   size="icon"
-                  onClick={() => handleDelete(event.id)}
+                  onClick={() => handleDelete(event._id)}
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
@@ -187,28 +239,30 @@ export default function EventsAdmin() {
         ))}
       </div>
 
-      {/* Modal de edição */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar Evento</DialogTitle>
-          </DialogHeader>
-          <EventForm
-            formData={formData}
-            setFormData={setFormData}
-            onSubmit={handleSaveEdit}
-            onCancel={() => setIsEditOpen(false)}
-          />
+        <DialogContent className="w-full max-w-3xl sm:max-w-2xl md:max-w-3xl mx-auto my-8 rounded-lg bg-background shadow-lg overflow-hidden">
+          {/* Container rolável */}
+          <div className="max-h-[70vh] sm:max-h-[80vh] overflow-y-auto p-6">
+            <DialogHeader>
+              <DialogTitle>Editar Evento</DialogTitle>
+            </DialogHeader>
+
+            <EventForm
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleSaveEdit}
+              onCancel={() => setIsEditOpen(false)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </div>
   );
 }
 
-/* 🧩 Formulário Reutilizável */
 interface EventFormProps {
-  formData: Omit<Event, "id">;
-  setFormData: React.Dispatch<React.SetStateAction<Omit<Event, "id">>>;
+  formData: Omit<Event, "_id">;
+  setFormData: React.Dispatch<React.SetStateAction<Omit<Event, "_id">>>;
   onSubmit: () => void;
   onCancel: () => void;
 }
@@ -227,6 +281,8 @@ function EventForm({
       }}
       className="space-y-4"
     >
+      {/* Campos exatamente como seu código atual */}
+      {/* Mantendo Título, Data, Hora, Artista, Descrição, Local, Preço, Categoria, Imagem e Featured */}
       <div className="space-y-2">
         <Label>Título</Label>
         <Input
@@ -308,10 +364,7 @@ function EventForm({
         <select
           value={formData.category}
           onChange={(e) =>
-            setFormData({
-              ...formData,
-              category: e.target.value as Event["category"],
-            })
+            setFormData({ ...formData, category: e.target.value })
           }
           className="w-full border rounded-md p-2 bg-background"
         >
