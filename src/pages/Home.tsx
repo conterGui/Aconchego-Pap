@@ -209,7 +209,7 @@ const Home = () => {
                     asChild
                     className="w-full bg-gradient-gold text-primary"
                   >
-                    <Link to="/reservas">Saiba mais</Link>
+                    <Link to="/eventos">Saiba mais</Link>
                   </Button>
                 </CardContent>
               </Card>

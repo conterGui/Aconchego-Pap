@@ -7,6 +7,7 @@ export interface IReservation extends Document {
   peopleQuantity: number;
   reservationDate: Date;
   reservationTime: string;
+  eventId?: mongoose.Types.ObjectId;
   tableNumber?: number;
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   notes?: string;
@@ -17,11 +18,19 @@ export interface IReservation extends Document {
 const ReservationSchema = new Schema<IReservation>(
   {
     customerName: { type: String, required: true },
-    customerEmail: { type: String, required: true },
+    customerEmail: {
+  type: String,
+  required: true,
+  lowercase: true,
+  trim: true,
+  match: [/^\S+@\S+\.\S+$/, "Email inválido"],
+},
+
     customerPhone: { type: String, required: true },
     peopleQuantity: { type: Number, required: true, min: 1 },
     reservationDate: { type: Date, required: true },
     reservationTime: { type: String, required: true },
+    eventId: { type: Schema.Types.ObjectId, ref: "Event" },
     tableNumber: { type: Number },
     status: {
       type: String,

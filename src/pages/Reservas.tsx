@@ -72,10 +72,18 @@ const Reservas = () => {
 
   const normalizeDate = (date?: string) => {
     if (!date) return "";
+
+    // ISO: 2026-02-19T00:00:00.000Z
+    if (date.includes("T")) {
+      return date.split("T")[0];
+    }
+
+    // Brasileiro: 19/02/2026
     if (date.includes("/")) {
       const [day, month, year] = date.split("/");
       return `${year}-${month}-${day}`;
     }
+
     return date;
   };
 
@@ -89,10 +97,26 @@ const Reservas = () => {
     guests: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!eventData?.eventId) return;
+    if (events.length === 0) return;
+
+    const selectedEvent = events.find((e) => e._id === eventData.eventId);
+
+    if (!selectedEvent) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      eventId: selectedEvent._id,
+      date: normalizeDate(selectedEvent.eventDate),
+      time: selectedEvent.eventTime,
+    }));
+  }, [events, eventData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate form
+    // ✅ Validate form
     if (
       !formData.name ||
       !formData.email ||
@@ -109,24 +133,61 @@ const Reservas = () => {
       return;
     }
 
-    // Show success message
-    toast({
-      title: "Reserva solicitada!",
-      description:
-        "Entraremos em contacto em breve para confirmar sua reserva.",
-      className: "bg-gradient-gold text-primary",
-    });
+    // ✅ Payload correto para o backend
+    const payload = {
+      customerName: formData.name,
+      customerEmail: formData.email,
+      customerPhone: formData.phone,
+      peopleQuantity: Number(formData.guests),
+      reservationDate: new Date(formData.date),
+      reservationTime: formData.time,
+      eventId: formData.eventId || null,
+    };
 
-    // Reset form
-    setFormData({
-      eventId: "",
-      name: "",
-      email: "",
-      phone: "",
-      date: "",
-      time: "",
-      guests: "",
-    });
+    try {
+      // ✅ Enviar reserva para API
+      const res = await fetch("http://localhost:3000/api/reservations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error("Erro ao enviar reserva");
+      }
+
+      const data = await res.json();
+      console.log("Reserva criada:", data);
+
+      // ✅ Toast sucesso
+      toast({
+        title: "Reserva solicitada!",
+        description:
+          "Entraremos em contacto em breve para confirmar sua reserva.",
+        className: "bg-gradient-gold text-primary",
+      });
+
+      // ✅ Reset form depois do sucesso
+      setFormData({
+        eventId: "",
+        name: "",
+        email: "",
+        phone: "",
+        date: "",
+        time: "",
+        guests: "",
+      });
+    } catch (error) {
+      console.error("Erro ao criar reserva:", error);
+
+      toast({
+        title: "Erro ao enviar reserva",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleChange = (field: string, value: string) => {

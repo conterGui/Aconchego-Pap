@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderAdmin from "@/components/HeaderAdmin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,18 +28,24 @@ interface Reservation {
   tableId: number;
   clientName: string;
   people: number;
-  day: DayOption;
+  day: string; // formato "YYYY-MM-DD"
   time: string; // "08:00"
 }
 
-type DayOption = "Quarta" | "Quinta" | "Sexta" | "Sábado" | "Domingo";
-
-const DAYS: DayOption[] = ["Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
-
-const HOURS = Array.from({ length: 12 }, (_, i) => {
-  const hour = 8 + i; // 08 -> 19
-  return `${String(hour).padStart(2, "0")}:00`;
+// Horários de 30 em 30 minutos das 08:00 às 19:30
+const HOURS_30MIN = Array.from({ length: 24 }, (_, i) => {
+  const hour = 8 + Math.floor(i / 2);
+  const minutes = i % 2 === 0 ? "00" : "30";
+  return `${String(hour).padStart(2, "0")}:${minutes}`;
 });
+
+// Dias da semana (próximos 7 dias)
+const DAYS = Array.from({ length: 7 }, (_, i) => {
+  const d = new Date();
+  d.setDate(d.getDate() + i);
+  return d.toISOString().split("T")[0]; // formato YYYY-MM-DD
+});
+type DayOption = string;
 
 export default function ReservasAdmin() {
   const [tables] = useState<Table[]>([
@@ -58,104 +64,167 @@ export default function ReservasAdmin() {
     { id: 13, capacity: 2, x: 80, y: 70, shape: "round" },
   ]);
 
-  // All reservations
+  // Todas as reservas
   const [reservations, setReservations] = useState<Reservation[]>([]);
 
-  // Create inputs
+  useEffect(() => {
+    async function fetchReservations() {
+      try {
+        const res = await fetch("http://localhost:3000/api/reservations");
+        if (!res.ok) throw new Error("Erro ao buscar reservas");
+
+        const data = await res.json();
+
+        const mapped: Reservation[] = data.map((r: any) => ({
+          id: r._id,
+          tableId: r.tableNumber || 0,
+          clientName: r.customerName,
+          people: r.peopleQuantity,
+          day: new Date(r.reservationDate).toISOString().split("T")[0],
+          time: r.reservationTime,
+        }));
+
+        // Atribui mesas automaticamente para reservas sem tableId
+        const withTables = mapped.map((r) => {
+          if (!r.tableId || r.tableId === 0) {
+            // Pega mesas disponíveis neste dia e horário
+            const availableTables = tables.filter(
+              (t) =>
+                !mapped.some(
+                  (resv) =>
+                    resv.tableId === t.id &&
+                    resv.day === r.day &&
+                    resv.time === r.time,
+                ) && t.capacity >= r.people,
+            );
+
+            if (availableTables.length > 0) {
+              // Escolhe a mesa com menor capacidade suficiente
+              const chosenTable = availableTables.reduce((prev, curr) =>
+                curr.capacity < prev.capacity ? curr : prev,
+              );
+              return { ...r, tableId: chosenTable.id };
+            }
+          }
+          return r;
+        });
+
+        setReservations(withTables);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchReservations();
+  }, [tables]);
+
+  // Inputs para criar reserva
   const [clientName, setClientName] = useState<string>("");
   const [people, setPeople] = useState<number>(2);
-  const [createDay, setCreateDay] = useState<DayOption>("Quarta");
+  const [createDay, setCreateDay] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  );
   const [createTime, setCreateTime] = useState<string>("08:00");
 
-  // View filter
-  const [viewDay, setViewDay] = useState<DayOption>("Quarta");
+  // Filtros do admin
+  const [viewDay, setViewDay] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  );
   const [viewTime, setViewTime] = useState<string>("08:00");
 
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
 
   // Helpers
-  const isReservedAt = (tableId: number, day: DayOption, time: string) =>
+  const isReservedAt = (tableId: number, day: string, time: string) =>
     reservations.some(
-      (r) => r.tableId === tableId && r.day === day && r.time === time
+      (r) => r.tableId === tableId && r.day === day && r.time === time,
     );
 
   const availableCount = tables.filter(
-    (t) => !isReservedAt(t.id, viewDay, viewTime)
+    (t) => !isReservedAt(t.id, viewDay, viewTime),
   ).length;
   const reservedCount = tables.filter((t) =>
-    isReservedAt(t.id, viewDay, viewTime)
+    isReservedAt(t.id, viewDay, viewTime),
   ).length;
 
-  const reserveTable = () => {
-    if (!clientName.trim() || !createTime) {
-      alert("Por favor, preencha todos os campos!");
-      return;
-    }
-
-    if (!DAYS.includes(createDay)) {
-      alert("Dia inválido. Escolha entre Quarta e Domingo.");
-      return;
-    }
-    if (!HOURS.includes(createTime)) {
-      alert(
-        "Horário inválido. Escolha um horário entre 08:00 e 19:00, de hora em hora."
-      );
-      return;
-    }
-
+  const reserveTable = async () => {
     const availableTables = tables.filter(
-      (t) => !isReservedAt(t.id, createDay, createTime) && t.capacity >= people
+      (t) => !isReservedAt(t.id, createDay, createTime) && t.capacity >= people,
     );
-
-    if (availableTables.length === 0) {
-      alert(
-        "Não há mesas disponíveis para este número de pessoas nesse dia/horário!"
-      );
-      return;
-    }
+    if (availableTables.length === 0) return alert("Não há mesas disponíveis");
 
     const chosenTable = availableTables.reduce((prev, curr) =>
-      curr.capacity < prev.capacity ? curr : prev
+      curr.capacity < prev.capacity ? curr : prev,
     );
 
-    const newReservation: Reservation = {
-      id: `${chosenTable.id}-${createDay}-${createTime}-${Date.now()}`,
-      tableId: chosenTable.id,
-      clientName: clientName.trim(),
-      people,
-      day: createDay,
-      time: createTime,
-    };
+    try {
+      const res = await fetch("http://localhost:3000/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: clientName,
+          customerEmail: "",
+          customerPhone: "",
+          peopleQuantity: people,
+          reservationDate: createDay,
+          reservationTime: createTime,
+          tableNumber: chosenTable.id,
+        }),
+      });
+      if (!res.ok) throw new Error("Erro ao criar reserva");
 
-    setReservations((prev) => [...prev, newReservation]);
+      const data = await res.json();
 
-    // reseta inputs (mantem o dia conveniente)
-    setClientName("");
-    setPeople(2);
-    setCreateTime("08:00");
-    setSelectedTable(chosenTable.id);
+      setReservations((prev) => [
+        ...prev,
+        {
+          id: data._id,
+          tableId: chosenTable.id,
+          clientName,
+          people,
+          day: createDay,
+          time: createTime,
+        },
+      ]);
 
-    // muda o visualizador para o slot criado
-    setViewDay(createDay);
-    setViewTime(createTime);
+      setClientName("");
+      setPeople(2);
+      setCreateTime("08:00");
+      setSelectedTable(chosenTable.id);
+      setViewDay(createDay);
+      setViewTime(createTime);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao criar reserva");
+    }
   };
 
   const cancelReservationAtView = (tableId: number) => {
-    const exists = reservations.some(
-      (r) => r.tableId === tableId && r.day === viewDay && r.time === viewTime
-    );
-    if (!exists) return;
     setReservations((prev) =>
       prev.filter(
         (r) =>
-          !(r.tableId === tableId && r.day === viewDay && r.time === viewTime)
-      )
+          !(r.tableId === tableId && r.day === viewDay && r.time === viewTime),
+      ),
     );
     setSelectedTable(null);
   };
 
-  const cancelReservationById = (reservationId: string) => {
-    setReservations((prev) => prev.filter((r) => r.id !== reservationId));
+  const cancelReservationById = async (reservationId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/reservations/${reservationId}`,
+        {
+          method: "DELETE",
+        },
+      );
+      if (!res.ok) throw new Error("Erro ao cancelar reserva");
+
+      setReservations((prev) => prev.filter((r) => r.id !== reservationId));
+      setSelectedTable(null);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao cancelar reserva");
+    }
   };
 
   const renderChairs = (table: Table) => {
@@ -176,7 +245,6 @@ export default function ReservasAdmin() {
               transform: "translateX(-50%)",
             }}
           />
-
           <div
             className="absolute bg-gradient-to-b from-amber-800 to-amber-900 rounded-b-lg shadow-md border border-amber-950"
             style={{
@@ -192,7 +260,6 @@ export default function ReservasAdmin() {
     } else {
       const rotation = table.rotation || 0;
       const isVertical = rotation === 90;
-
       return (
         <>
           <div
@@ -241,18 +308,22 @@ export default function ReservasAdmin() {
   };
 
   const reservationsAtView = reservations.filter(
-    (r) => r.day === viewDay && r.time === viewTime
+    (r) => r.day === viewDay && r.time === viewTime,
   );
 
-  const groupedByDay = DAYS.map((d) => ({
-    day: d,
-    items: reservations
-      .filter((r) => r.day === d)
-      .sort((a, b) => {
-        if (a.time === b.time) return a.tableId - b.tableId;
-        return a.time.localeCompare(b.time);
-      }),
-  }));
+  // Agrupa reservas por dia
+  const groupedByDay = Array.from(new Set(reservations.map((r) => r.day))).map(
+    (d) => ({
+      day: d,
+      items: reservations
+        .filter((r) => r.day === d)
+        .sort((a, b) =>
+          a.time === b.time
+            ? a.tableId - b.tableId
+            : a.time.localeCompare(b.time),
+        ),
+    }),
+  );
 
   return (
     <div className="min-h-screen bg-background from-slate-50 to-slate-100 p-6 mt-16">
@@ -392,7 +463,7 @@ export default function ReservasAdmin() {
                         <SelectValue placeholder="Escolha o horário" />
                       </SelectTrigger>
                       <SelectContent className="bg-card text-foreground border border-border">
-                        {HOURS.map((h) => (
+                        {HOURS_30MIN.map((h) => (
                           <SelectItem
                             key={h}
                             value={h}
@@ -462,7 +533,7 @@ export default function ReservasAdmin() {
                           {g.items.map((r) => (
                             <div
                               key={r.id}
-                              className="flex items-center justify-between bg-slate-50 p-2 rounded border"
+                              className="flex items-center justify-between p-2 rounded border"
                             >
                               <div>
                                 <div className="text-sm font-medium text-foreground">
@@ -549,7 +620,7 @@ export default function ReservasAdmin() {
                         <SelectValue placeholder="Horário" />
                       </SelectTrigger>
                       <SelectContent className="bg-card text-foreground border border-border">
-                        {HOURS.map((h) => (
+                        {HOURS_30MIN.map((h) => (
                           <SelectItem
                             key={h}
                             value={h}
@@ -638,7 +709,7 @@ export default function ReservasAdmin() {
                   const reservedHere = isReservedAt(
                     table.id,
                     viewDay,
-                    viewTime
+                    viewTime,
                   );
 
                   return (
@@ -706,7 +777,7 @@ export default function ReservasAdmin() {
                             {reservedHere
                               ? (
                                   reservationsAtView.find(
-                                    (r) => r.tableId === table.id
+                                    (r) => r.tableId === table.id,
                                   )?.clientName ?? "Reserv."
                                 ).substring(0, 6)
                               : `Mesa ${table.id}`}
@@ -720,7 +791,7 @@ export default function ReservasAdmin() {
                           >
                             {reservedHere
                               ? reservationsAtView.find(
-                                  (r) => r.tableId === table.id
+                                  (r) => r.tableId === table.id,
                                 )?.time
                               : `${table.capacity} pessoas`}
                           </div>
@@ -751,7 +822,7 @@ export default function ReservasAdmin() {
                       (r) =>
                         r.tableId === table.id &&
                         r.day === viewDay &&
-                        r.time === viewTime
+                        r.time === viewTime,
                     );
                     return (
                       <div className="flex items-start justify-between">
@@ -763,7 +834,7 @@ export default function ReservasAdmin() {
                             <span
                               className={`px-3 py-1 rounded-full text-xs font-medium ${
                                 reservationHere
-                                  ? "bg-destructive-100 text-destructive-700 border border-destructive-300"
+                                  ? "bg-red-100 text-red-700 border border-red-300"
                                   : "bg-emerald-100 text-emerald-700 border border-emerald-300"
                               }`}
                             >
