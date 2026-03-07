@@ -19,7 +19,7 @@ const Loja = () => {
   const [selectedRoast, setSelectedRoast] = useState<string>("all");
   const [selectedWeight, setSelectedWeight] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
-  const { addItem } = useCart(); // pegar a função para adicionar itens
+  const { addItem } = useCart();
 
   const filteredProducts = products.filter((product) => {
     const roastMatch =
@@ -34,9 +34,6 @@ const Loja = () => {
     fetchProducts();
   }, []);
 
-  {
-    /*Função GET*/
-  }
   const fetchProducts = async () => {
     try {
       const res = await fetch("http://localhost:3000/api/products");
@@ -150,21 +147,28 @@ const Loja = () => {
               {filteredProducts.map((product) => (
                 <Card
                   key={product._id}
-                  className={`group hover:shadow-elegant transition-all duration-300 ${
-                    !product.available ? "opacity-75" : ""
-                  }`}
+                  className="group hover:shadow-elegant transition-all duration-300"
                 >
                   <CardHeader>
                     <div className="w-full flex items-center justify-center">
                       <div
-                        className="w-4/5 h-4/5 rounded-lg mb-4 flex items-center justify-center"
+                        className="relative w-4/5 rounded-lg mb-4 overflow-hidden"
                         style={{ backgroundColor: "#171614" }}
                       >
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-full object-cover block"
+                          className={`w-full h-full object-cover block transition-opacity duration-300 ${
+                            !product.available ? "opacity-30" : ""
+                          }`}
                         />
+                        {!product.available && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-white text-sm font-semibold px-4 py-1.5 rounded-full shadow-lg tracking-wide">
+                              Indísponivel
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -184,7 +188,11 @@ const Loja = () => {
                       </Badge>
                     </div>
 
-                    <CardTitle className="font-playfair text-xl">
+                    <CardTitle
+                      className={`font-playfair text-xl ${
+                        !product.available ? "text-muted-foreground" : ""
+                      }`}
+                    >
                       {product.name}
                     </CardTitle>
                   </CardHeader>
@@ -199,7 +207,13 @@ const Loja = () => {
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="font-bold text-accent text-2xl">
+                        <span
+                          className={`font-bold text-2xl ${
+                            product.available
+                              ? "text-accent"
+                              : "text-muted-foreground"
+                          }`}
+                        >
                           € {product.price.toFixed(2).replace(".", ",")}
                         </span>
                         <div className="text-xs text-muted-foreground">
@@ -215,7 +229,6 @@ const Loja = () => {
                         }`}
                         disabled={!product.available}
                         onClick={() => {
-                          console.log("🧾 Produto adicionado:", product);
                           if (product.available) {
                             addItem({
                               _id: product._id,
@@ -233,7 +246,7 @@ const Loja = () => {
                             Comprar
                           </>
                         ) : (
-                          "Esgotado"
+                          "Indisponível"
                         )}
                       </Button>
                     </div>

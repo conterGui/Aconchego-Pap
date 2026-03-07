@@ -39,16 +39,23 @@ const getMonthlyRevenue = (orders: any[]) => {
     "Nov",
     "Dez",
   ];
+
   const grouped = Array(12).fill(0);
 
   orders.forEach((o) => {
-    const m = new Date(o.createdAt).getMonth();
-    grouped[m] += o.totalAmount;
+    if (!o.createdAt || !o.totalAmount) return;
+
+    const date = new Date(o.createdAt);
+    if (isNaN(date.getTime())) return;
+
+    const monthIndex = date.getMonth();
+    grouped[monthIndex] += Number(o.totalAmount);
   });
 
-  return months
-    .map((m, i) => ({ month: m, revenue: grouped[i] }))
-    .filter((m) => m.revenue > 0);
+  return months.map((month, index) => ({
+    month,
+    revenue: grouped[index],
+  }));
 };
 
 const getTopProducts = (orders: any[]) => {
@@ -61,7 +68,7 @@ const getTopProducts = (orders: any[]) => {
       }
       map[i.productName].sales += i.quantity;
       map[i.productName].revenue += i.price * i.quantity;
-    })
+    }),
   );
 
   return Object.entries(map)
@@ -74,7 +81,7 @@ const getRecentActivity = (orders: any[]) =>
   [...orders]
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 4)
     .map((order) => ({
@@ -181,50 +188,69 @@ const AdminHome = () => {
                 <span className="text-sm font-medium text-accent">+18%</span>
               </div>
             </CardHeader>
+
             <CardContent className="pt-2">
-              <ResponsiveContainer width="100%" height={220}>
-                <AreaChart data={monthlyRevenue}>
-                  <defs>
-                    <linearGradient
-                      id="colorRevenue"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor="hsl(45, 65%, 75%)"
-                        stopOpacity={0.3}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor="hsl(45, 65%, 75%)"
-                        stopOpacity={0}
-                      />
-                    </linearGradient>
-                  </defs>
-                  <XAxis
-                    dataKey="month"
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis stroke="hsl(var(--muted-foreground))" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="hsl(45, 65%, 75%)"
-                    strokeWidth={3}
-                    fill="url(#colorRevenue)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              <div className="w-full h-[240px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={monthlyRevenue}>
+                    <defs>
+                      <linearGradient
+                        id="colorRevenue"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="hsl(45,65%,75%)"
+                          stopOpacity={0.4}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="hsl(45,65%,75%)"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+
+                    <XAxis
+                      dataKey="month"
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+
+                    <YAxis
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                      tickFormatter={(value) =>
+                        `€${value.toLocaleString("pt-PT")}`
+                      }
+                    />
+
+                    <Tooltip
+                      formatter={(value: number) =>
+                        `€${value.toLocaleString("pt-PT")}`
+                      }
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                      }}
+                    />
+
+                    <Area
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke="hsl(45,65%,75%)"
+                      strokeWidth={3}
+                      fill="url(#colorRevenue)"
+                      dot={{ r: 3 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
 

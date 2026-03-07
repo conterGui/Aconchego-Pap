@@ -157,7 +157,7 @@ export default function EventsAdmin() {
               Adicionar Evento
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Novo Evento</DialogTitle>
             </DialogHeader>
@@ -281,8 +281,6 @@ function EventForm({
       }}
       className="space-y-4"
     >
-      {/* Campos exatamente como seu código atual */}
-      {/* Mantendo Título, Data, Hora, Artista, Descrição, Local, Preço, Categoria, Imagem e Featured */}
       <div className="space-y-2">
         <Label>Título</Label>
         <Input

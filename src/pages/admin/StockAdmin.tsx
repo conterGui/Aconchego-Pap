@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import HeaderAdmin from "@/components/HeaderAdmin";
-import { Plus, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, Search } from "lucide-react";
 
 export default function StorkAdmin() {
   const [products, setProducts] = useState<any[]>([]);
@@ -46,7 +46,7 @@ export default function StorkAdmin() {
   }
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/products");
+      const res = await fetch("http://localhost:3000/api/products/admin");
       const data = await res.json();
       setProducts(data);
     } catch (error) {
@@ -63,10 +63,10 @@ export default function StorkAdmin() {
         await fetch(
           `http://localhost:3000/api/products/${editingProduct._id}`,
           {
-            method: "PATCH",
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(product),
-          }
+          },
         );
       } else {
         await fetch("http://localhost:3000/api/products", {
@@ -98,7 +98,7 @@ export default function StorkAdmin() {
 
   const filteredProducts = searchTerm
     ? products.filter((p) =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()),
       )
     : products;
 
@@ -201,12 +201,13 @@ export default function StorkAdmin() {
                     <DialogTrigger asChild>
                       <Button
                         variant="outline"
+                        size="icon"
                         onClick={() => {
                           setEditingProduct(product);
                           setOpenEditDialog(true);
                         }}
                       >
-                        Editar
+                        <Pencil className="w-4 h-4" />
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
@@ -225,9 +226,10 @@ export default function StorkAdmin() {
 
                   <Button
                     variant="destructive"
+                    size="icon"
                     onClick={() => handleDelete(product._id)}
                   >
-                    Excluir
+                    <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               </CardContent>
@@ -263,8 +265,14 @@ function ProductForm({ initialData, onSave }: ProductFormProps) {
       description: "",
       available: true,
       image: "",
-    }
+    },
   );
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value });

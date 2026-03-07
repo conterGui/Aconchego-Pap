@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { MenuItem, menuItems } from "@/pages/data/menuData";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
@@ -66,7 +65,7 @@ export default function MenuAdmin() {
   });
 
   const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+    item.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   useEffect(() => {
@@ -140,11 +139,11 @@ export default function MenuAdmin() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
-        }
+        },
       );
       const updatedItem: MenuItem = await res.json();
       setItems((prev) =>
-        prev.map((item) => (item._id === updatedItem._id ? updatedItem : item))
+        prev.map((item) => (item._id === updatedItem._id ? updatedItem : item)),
       );
       setEditingItem(null);
       setIsEditOpen(false);

@@ -305,7 +305,7 @@ const Reservas = () => {
                         className="flex items-center space-x-2"
                       >
                         <Phone className="h-4 w-4 text-accent" />
-                        <span>Telefomovel</span>
+                        <span>Telemóvel</span>
                       </Label>
                       <Input
                         id="phone"

@@ -814,7 +814,7 @@ export default function ReservasAdmin() {
 
               {/* Selected table details */}
               {selectedTable && (
-                <div className="mt-4 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm">
+                <div className="mt-4 p-5 bg-slate-50 rounded-xl border-2 border-blue-200 shadow-sm">
                   {(() => {
                     const table = tables.find((t) => t.id === selectedTable);
                     if (!table) return null;
@@ -892,7 +892,7 @@ export default function ReservasAdmin() {
                             variant="outline"
                             className="ml-4 border-destructive-300 text-destructive-600 hover:bg-destructive-50 font-medium"
                           >
-                            Cancelar Reserva (este horário)
+                            Cancelar Reserva
                           </Button>
                         )}
                       </div>
@@ -915,13 +915,13 @@ export default function ReservasAdmin() {
                     {reservationsAtView.map((r) => (
                       <div
                         key={r.id}
-                        className="flex items-center justify-between p-3 rounded border bg-white"
+                        className="flex items-center justify-between p-3 rounded border bg-background shadow-sm border-border"
                       >
                         <div>
                           <div className="text-sm font-medium">
                             Mesa #{r.tableId} • {r.people} pessoas
                           </div>
-                          <div className="text-xs text-slate-600">
+                          <div className="text-xs text-slate-400">
                             {r.clientName}
                           </div>
                         </div>

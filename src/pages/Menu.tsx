@@ -24,7 +24,7 @@ const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState("cafes");
 
   const filteredItems = menuItems.filter(
-    (item) => item.category === selectedCategory
+    (item) => item.category === selectedCategory,
   );
 
   const getCategoryIcon = (category: string) => {
@@ -157,25 +157,6 @@ const Menu = () => {
                         <p className="text-muted-foreground mb-4 text-sm">
                           {item.description}
                         </p>
-
-                        {item.allergens && (
-                          <div className="mb-4">
-                            <p className="text-xs text-muted-foreground mb-2">
-                              <strong>Contém:</strong>
-                            </p>
-                            <div className="flex flex-wrap gap-1">
-                              {item.allergens.map((allergen, index) => (
-                                <Badge
-                                  key={index}
-                                  variant="outline"
-                                  className="text-xs"
-                                >
-                                  {allergen}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        )}
                       </CardContent>
                     </Card>
                   ))}

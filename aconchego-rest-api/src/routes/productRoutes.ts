@@ -4,16 +4,18 @@ import {
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getAllProductsAdmin
 } from '../controllers/productController';
 
 const router = Router();
 
-// Public routes
-router.get('/', getAllProducts);
-router.get('/:id', getProductById);
+// Rotas admin primeiro
+router.get('/admin', getAllProductsAdmin); // ✅ sem "products" no final
 
-// Admin routes
+// Rotas padrão de CRUD
+router.get('/:id', getProductById);
+router.get('/', getAllProducts);
 router.post('/', createProduct);
 router.put('/:id', updateProduct);
 router.delete('/:id', deleteProduct);
