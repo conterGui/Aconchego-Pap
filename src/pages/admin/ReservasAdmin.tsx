@@ -84,7 +84,7 @@ export default function ReservasAdmin() {
 
   const fetchReservations = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/reservations");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reservations`);
       if (!res.ok) throw new Error("Erro ao buscar reservas");
       const data = await res.json();
 
@@ -173,7 +173,7 @@ export default function ReservasAdmin() {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/reservations", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reservations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -214,7 +214,7 @@ export default function ReservasAdmin() {
   const cancelReservationById = async (reservationId: string) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/reservations/${reservationId}`,
+        `${import.meta.env.VITE_API_URL}/reservations/${reservationId}`,
         { method: "DELETE" },
       );
       if (!res.ok) throw new Error("Erro ao cancelar reserva");

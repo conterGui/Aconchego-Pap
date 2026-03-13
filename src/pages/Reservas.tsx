@@ -43,7 +43,7 @@ const Reservas = () => {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const res = await fetch("http://localhost:3000/api/events");
+        const res = await fetch(import.meta.env.VITE_API_URL + "/events");
 
         if (!res.ok) {
           throw new Error("Erro ao buscar eventos");
@@ -146,7 +146,7 @@ const Reservas = () => {
 
     try {
       // ✅ Enviar reserva para API
-      const res = await fetch("http://localhost:3000/api/reservations", {
+      const res = await fetch(import.meta.env.VITE_API_URL + "/reservations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

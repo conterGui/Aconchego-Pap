@@ -42,7 +42,7 @@ const EventPage = () => {
       try {
         if (!id) throw new Error("ID inválido");
 
-        const res = await fetch(`http://localhost:3000/api/events/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/events/${id}`);
 
         if (!res.ok) {
           throw new Error("Evento não encontrado");

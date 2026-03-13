@@ -45,7 +45,7 @@ const Eventos = () => {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const res = await fetch("http://localhost:3000/api/events");
+        const res = await fetch(import.meta.env.VITE_API_URL + "/events");
 
         if (!res.ok) {
           throw new Error("Erro na resposta da API");

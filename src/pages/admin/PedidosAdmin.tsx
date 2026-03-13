@@ -33,7 +33,7 @@ const PedidosPage = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/orders");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/orders`);
         const data = await res.json();
         setOrders(data);
       } catch (error) {
@@ -84,8 +84,8 @@ const PedidosPage = () => {
                         order.status === "pending"
                           ? "outline"
                           : order.status === "completed"
-                          ? "default"
-                          : "secondary"
+                            ? "default"
+                            : "secondary"
                       }
                     >
                       {order.status}

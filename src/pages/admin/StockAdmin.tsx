@@ -46,7 +46,7 @@ export default function StorkAdmin() {
   }
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/products/admin");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/products/admin`);
       const data = await res.json();
       setProducts(data);
     } catch (error) {
@@ -61,7 +61,7 @@ export default function StorkAdmin() {
     try {
       if (editingProduct) {
         await fetch(
-          `http://localhost:3000/api/products/${editingProduct._id}`,
+          `${import.meta.env.VITE_API_URL}/products/${editingProduct._id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -69,7 +69,7 @@ export default function StorkAdmin() {
           },
         );
       } else {
-        await fetch("http://localhost:3000/api/products", {
+        await fetch(`${import.meta.env.VITE_API_URL}/products`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(product),
@@ -87,7 +87,7 @@ export default function StorkAdmin() {
   }
   const handleDelete = async (_id: string) => {
     try {
-      await fetch(`http://localhost:3000/api/products/${_id}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/products/${_id}`, {
         method: "DELETE",
       });
       fetchProducts();

@@ -53,7 +53,7 @@ export default function EventsAdmin() {
   useEffect(() => {
     async function fetchEvents() {
       try {
-        const res = await fetch("http://localhost:3000/api/events");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/events`);
         const data = await res.json();
         setItems(data);
       } catch (err) {
@@ -84,7 +84,7 @@ export default function EventsAdmin() {
 
   const handleAdd = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/events", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/events`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -108,7 +108,7 @@ export default function EventsAdmin() {
     if (!editingItem) return;
     try {
       const res = await fetch(
-        `http://localhost:3000/api/events/${editingItem._id}`,
+        `${import.meta.env.VITE_API_URL}/events/${editingItem._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -131,7 +131,7 @@ export default function EventsAdmin() {
 
   const handleDelete = async (id: string) => {
     try {
-      await fetch(`http://localhost:3000/api/events/${id}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/events/${id}`, {
         method: "DELETE",
       });
       setItems((prev) => prev.filter((item) => item._id !== id));
