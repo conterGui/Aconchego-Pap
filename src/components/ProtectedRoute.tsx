@@ -5,8 +5,7 @@ export default function ProtectedRoute({
 }: {
   children: JSX.Element;
 }) {
-  const isAdminLogged =
-    localStorage.getItem("isAdminLogged") === "false" ? false : true;
+  const isAdminLogged = localStorage.getItem("isAdminLogged") === "true";
 
   if (!isAdminLogged) {
     return <Navigate to="/login" replace />;
