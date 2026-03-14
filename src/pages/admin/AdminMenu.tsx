@@ -27,7 +27,7 @@ type MenuFormData = {
 };
 
 export default function MenuAdmin() {
-  const BASE_URL = "http://localhost:3000/api/menu";
+  const BASE_URL = import.meta.env.VITE_API_URL + "/menu";
   const [items, setItems] = useState<MenuItem[]>([]);
   const [search, setSearch] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -71,7 +71,7 @@ export default function MenuAdmin() {
   useEffect(() => {
     async function loadItems() {
       try {
-        const res = await fetch("http://localhost:3000/api/menu");
+        const res = await fetch(import.meta.env.VITE_API_URL + "/menu");
         const data: GroupedMenuResponse = await res.json();
 
         // Converte o objeto agrupado em array simples
@@ -134,7 +134,7 @@ export default function MenuAdmin() {
     if (!editingItem) return;
     try {
       const res = await fetch(
-        `http://localhost:3000/api/menu/${editingItem._id}`,
+        `${import.meta.env.VITE_API_URL}/menu/${editingItem._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

@@ -70,27 +70,11 @@ const Footer = () => {
               </Button>
             </div>
           </div>
-
-          {/* Newsletter */}
-          <div className="space-y-4">
-            <h3 className="font-playfair font-bold text-lg text-foreground">
-              Newsletter
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Receba novidades sobre nossos eventos e promoções especiais.
-            </p>
-            <div className="flex space-x-2">
-              <Input type="email" placeholder="Seu e-mail" className="flex-1" />
-              <Button className="bg-gradient-gold text-primary shadow-gold">
-                Assinar
-              </Button>
-            </div>
-          </div>
         </div>
 
         <div className="mt-8 pt-8 border-t border-border text-center">
           <p className="text-sm text-muted-foreground">
-            © 2024 Aconchego Café. Todos os direitos reservados.
+            © 2026 Aconchego Café. Todos os direitos reservados.
           </p>
         </div>
       </div>
