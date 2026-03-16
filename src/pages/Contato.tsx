@@ -31,7 +31,7 @@ const Contato = () => {
     {
       icon: <Clock className="h-5 w-5 text-accent" />,
       title: "Horário",
-      content: "Seg-Qui: 08h-22h\nSex-Sáb: 08h-00h\nDom: 09h-21h",
+      content: "Seg-Qui: 08h-19h30\nSex-Sáb: 08h-19h30\nDom: 09h-19h30",
     },
   ];
 

@@ -222,11 +222,6 @@ const Reservas = () => {
     "18:30",
     "19:00",
     "19:30",
-    "20:00",
-    "20:30",
-    "21:00",
-    "21:30",
-    "22:00",
   ];
 
   return (
@@ -451,15 +446,15 @@ const Reservas = () => {
                   <CardContent className="space-y-2">
                     <div className="flex justify-between">
                       <span>Segunda a Quinta</span>
-                      <span>08:00 - 22:00</span>
+                      <span>08:00 - 19:30</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Sexta e Sábado</span>
-                      <span>08:00 - 00:00</span>
+                      <span>08:00 - 19:30</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Domingo</span>
-                      <span>09:00 - 21:00</span>
+                      <span>09:00 - 19:30</span>
                     </div>
                   </CardContent>
                 </Card>
