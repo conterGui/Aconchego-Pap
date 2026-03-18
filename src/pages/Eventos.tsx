@@ -179,12 +179,6 @@ const Eventos = () => {
                       </p>
 
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <Ticket className="h-4 w-4 text-accent" />
-                          <span className="font-bold text-accent text-lg">
-                            € {event.price.toFixed(2).replace(".", ",")}
-                          </span>
-                        </div>
                         <Button
                           asChild
                           className="bg-gradient-gold text-primary shadow-gold"
@@ -247,9 +241,6 @@ const Eventos = () => {
                     </p>
 
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-accent">
-                        € {event.price.toFixed(2).replace(".", ",")}
-                      </span>
                       <Button
                         size="sm"
                         asChild
