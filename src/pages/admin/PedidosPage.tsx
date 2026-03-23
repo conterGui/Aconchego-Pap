@@ -81,17 +81,6 @@ const PedidoDetalhePage = () => {
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
               Pedido #{order._id.slice(-6).toUpperCase()}
-              <Badge
-                variant={
-                  order.status === "pending"
-                    ? "outline"
-                    : order.status === "completed"
-                      ? "default"
-                      : "secondary"
-                }
-              >
-                {order.status}
-              </Badge>
             </CardTitle>
           </CardHeader>
 
